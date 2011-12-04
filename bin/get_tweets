@@ -1,3 +1,4 @@
+#!/usr/bin/bash
 ruby ../track.rb &
 cat $! > /var/run/get_tweets.pid 
 
