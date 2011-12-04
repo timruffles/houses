@@ -16,6 +16,6 @@ key = ARGV[0]
 TweetStream::Client.new.track(kwords) do |status|
   puts status.text
   redis.sadd key, status.to_json
-  redis.set "Last tweet received at #{Time.now.to_s}"
+  redis.set "last_tweet", Time.now.to_s
 end
 
