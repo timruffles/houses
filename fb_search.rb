@@ -23,7 +23,7 @@ def read term, limit, redis
     puts "read #{result["data"].length} statuses"
     result["data"].each do |s| yield s end
     url = result["paging"]["previous"]
-    date = Date.parse(Time.at(result["paging"]["previous"][/since=(\d+)/,1].to_i).to_s)
+    date = Time.at(result["paging"]["previous"][/since=(\d+)/,1].to_i)
     redis.hset "last_searched", term, Date.parse(result["data"].last["created_time"])
   end
 end
@@ -31,6 +31,6 @@ end
 read term, last_search, redis do |result|
   likes = (result["likes"] || {})["count"]
   store = {:id => result["id"], :message => result["message"], :likes => likes || 0}
-  redis.sadd "facebook_#{term.gsub(/[^a-z]/i,"")}", store.to_json 
+  redis.hset "facebook_#{term.gsub(/[^a-z]/i,"")}", store[:id], store.to_json 
   puts "Stored #{store}"
 end

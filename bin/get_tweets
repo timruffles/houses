@@ -1,4 +1,3 @@
-#!/usr/bin/bash
-ruby ../track.rb &
-cat $! > /var/run/get_tweets.pid 
+#!/bin/bash
+/home/tim/.rvm/rubies/ruby-1.9.2-p290/bin/ruby /home/tim/houses/track.rb
 

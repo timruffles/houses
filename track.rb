@@ -11,8 +11,12 @@ TweetStream.configure do |config|
 end
 
 redis = Redis.new
+puts "Reading keywords from STDIN"
 kwords = STDIN.read.split("\n").map(&:strip)
+puts "reading #{kwords.join(", ")}"
 key = ARGV[0]
+exit "No key specified" unless key
+
 TweetStream::Client.new.track(kwords) do |status|
   puts status.text
   redis.sadd key, status.to_json
