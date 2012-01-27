@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  search_id: 1
+  tweet_id: 1
+  category: MyString
+
+two:
+  search_id: 1
+  tweet_id: 1
+  category: MyString
