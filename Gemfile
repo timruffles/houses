@@ -7,6 +7,7 @@ gem 'rails', '3.2.0'
 
 gem 'sqlite3'
 gem 'omniauth'
+gem 'omniauth-twitter'
 
 
 # Gems used only for assets and not required

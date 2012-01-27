@@ -2,9 +2,10 @@ class CreateUsers < ActiveRecord::Migration
   def change
     create_table :users do |t|
       t.integer :id
-      t.integer :twitter_id
-      t.string :auth_token
-      t.string :twitter_name
+      t.integer :uid
+      t.string :provider
+      t.string :name
+      t.string :email
 
       t.timestamps
     end

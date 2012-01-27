@@ -2,12 +2,14 @@
 
 one:
   id: 1
-  twitter_id: 1
-  auth_token: MyString
-  twitter_name: MyString
+  uid: 1
+  provider: MyString
+  name: MyString
+  email: MyString
 
 two:
   id: 1
-  twitter_id: 1
-  auth_token: MyString
-  twitter_name: MyString
+  uid: 1
+  provider: MyString
+  name: MyString
+  email: MyString
