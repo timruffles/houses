@@ -4,8 +4,6 @@ class CreateClassifiedTweets < ActiveRecord::Migration
       t.integer :search_id
       t.integer :tweet_id
       t.string :category
-
-      t.timestamps
     end
   end
 end
