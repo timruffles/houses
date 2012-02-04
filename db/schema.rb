@@ -11,30 +11,30 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120202083400) do
+ActiveRecord::Schema.define(:version => 20120204204811) do
 
   create_table "classified_tweets", :force => true do |t|
-    t.integer "search_id"
-    t.integer "tweet_id",  :limit => 8
-    t.string  "category"
+    t.integer "search_id",              :null => false
+    t.integer "tweet_id",  :limit => 8, :null => false
+    t.string  "category",               :null => false
   end
 
   create_table "searches", :force => true do |t|
-    t.integer  "user_id"
-    t.string   "keywords"
+    t.integer  "user_id",    :null => false
+    t.string   "keywords",   :null => false
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
   end
 
   create_table "tweets", :force => true do |t|
-    t.text     "tweet"
+    t.text     "tweet",      :null => false
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
   end
 
   create_table "users", :force => true do |t|
-    t.integer  "uid"
-    t.string   "provider"
+    t.integer  "uid",        :null => false
+    t.string   "provider",   :null => false
     t.string   "name"
     t.string   "email"
     t.datetime "created_at", :null => false
