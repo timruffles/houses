@@ -9,3 +9,9 @@ development:
   username: tim
   password: pass
 
+
+test:
+  adapter: postgresql
+  database: test
+  username: tim
+  password: pass

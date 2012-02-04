@@ -27,6 +27,8 @@ gem 'jquery-rails'
 
 group :test do
   gem 'mocha'
+  gem 'factory_girl_rails'
+  gem 'spork'
 end
 
 # To use ActiveModel has_secure_password
