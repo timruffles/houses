@@ -7,6 +7,6 @@ class ApplicationController < ActionController::Base
     @current_user ||= User.find(session[:user_id]) if session[:user_id]
   end
   rescue_from CanCan::AccessDenied do |exception|
-    render 401
+    render :status => 401
   end
 end
