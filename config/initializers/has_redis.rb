@@ -1,9 +1,7 @@
-module HasRedis
-  @redis_instance = nil
-  class << self
-    attr_accessor :redis_instance
-  end
-  def redis
-    HasRedis.redis_instance ||= Redis.new
-  end
+HasRedis.redis_instance = if ["production","staging"].include? ENV["RAILS_ENV"]
+  uri = URI.parse(ENV["REDISTOGO_URL"])
+  Redis.new(:host => uri.host, :port => uri.port, :password => uri.password)
+else
+  Redis.new
 end
+

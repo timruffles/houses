@@ -6,6 +6,8 @@ gem 'rails', '3.2.0'
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
 gem 'pg'
+gem 'redis'
+
 gem 'omniauth'
 gem 'omniauth-twitter'
 gem 'cancan'
