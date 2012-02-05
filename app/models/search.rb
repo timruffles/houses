@@ -5,6 +5,8 @@ class Search < ActiveRecord::Base
   validates :keywords, :length => {:minimum => 2}
   before_save do
     return unless keywords_changed?
+    puts "saving to redis"
+    return
     redis.publish "modelUpdates", {
       :type => "Search",
       :id => self.id,

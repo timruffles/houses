@@ -4,7 +4,7 @@ class Ability
   def initialize(user)
     user ||= User.new
     alias_action :mine, :to => :see_my_own
-    can :create, Search { !user.is_new? }
+    can(:create, Search) { !user.new_record? }
     can [:see_my_own,:read,:update,:destroy], Search, :user_id => user.id
     can [:update], ClassifiedTweet, :user_id => user.id
   end
