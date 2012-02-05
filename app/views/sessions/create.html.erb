@@ -1,0 +1,4 @@
+<script>
+  window.opener.authorised(<%= current_user.to_json.html_safe %>);
+  window.close()
+</script>
