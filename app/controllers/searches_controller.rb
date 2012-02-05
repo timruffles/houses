@@ -10,10 +10,14 @@ class SearchesController < ApplicationController
     respond_with current_user.searches.create params[:search]
   end
   def update
-    respond_with Search.find(params[:id]).update_attributes(params[:search])
+    @search = Search.find(params[:id])
+    @search.update_attributes(params[:search])
+    respond_with @search
   end
   def destroy
-    respond_with Search.find(params[:id]).destroy
+    @search = Search.find(params[:id])
+    @search.destroy
+    respond_with @search
   end
 end
 
