@@ -16,4 +16,7 @@ class User < ActiveRecord::Base
       oauth_secret: oauth_secret
     }
   end
+  def as_json_clientside options = {}
+    as_json options.merge(:except => ["oauth_token","oauth_secret"])
+  end
 end
