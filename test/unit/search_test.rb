@@ -2,17 +2,17 @@ require 'test_helper'
 
 class SearchTest < ActiveSupport::TestCase
   def expect_publish
-    mock_redis = mock
-    mock_redis.expects(:publish).once
-    Search.stubs(:redis => mock_redis)
+    @search.expects(:publish_callback).once
   end
   test "publishes updates on create" do
+    @search = Factory.build :search
     expect_publish
-    Search.create
+    @search.save
   end
-  test "publishes updates on create" do
-    search = Search.create
+  test "publishes updates on update" do
+    @search = Factory :search
     expect_publish
-    search.update_attributes :keywords => "new keywords"
+    @search.keywords = "new keywords"
+    @search.save
   end
 end

@@ -28,7 +28,7 @@ gem 'jquery-rails'
 
 
 group :test do
-  gem 'mocha'
+  gem 'mocha', :require => false
   gem 'factory_girl_rails'
   gem 'spork'
 end

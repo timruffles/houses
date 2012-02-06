@@ -10,8 +10,8 @@ class Search < ActiveRecord::Base
   after_create do
     publish_callback :after_create, {:keywords => keywords}
   end
-  after_save do
-    publish_callback :after_save, {:keywords => keywords} if keywords_changed?
+  after_update do
+    publish_callback :after_update, {:keywords => keywords} if keywords_changed?
   end
   after_destroy do
     publish_callback :after_destroy, {:keywords => keywords}
