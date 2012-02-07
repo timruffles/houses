@@ -1,0 +1,37 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Feed the bird!</title>
+
+    <!-- Stylesheets -->
+    <%= stylesheet_link_tag "application" %>
+  </head>
+  <body>
+      <!-- Splash screen -->
+      <section id="splash">
+        <h1>Teach The Bird!</h1>
+        <a href="#login">Login</a>
+      </section>
+
+      <!-- The Application -->
+      <section id="app" style="display:none">
+        <header id="toolbar"><div class="toolbar-inner">
+          <h1>Teach the Bird</h1>
+          <span class="button" id="new-stream-btn">New Stream</span>
+          <section id="user">
+            <span class="user-name"></span>
+          </section>
+        </header>
+        <div id="container">
+            <section id="streams">
+            </section>
+        </div>
+      </section>
+      <!-- Javascript -->
+      <%= javascript_include_tag "app" %>
+  </body>
+</html>

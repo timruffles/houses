@@ -1,3 +1,17 @@
+//= require jquery.min
+//= require underscore.min
+//= require backbone.min
+//= require tweets
+//= require tweet-parsers
+
+//= require templates
+
+//= require sinon
+//= require fake_server
+
+//= require twitter_ml
+
+
 class Tweet extends Backbone.Model
    
     url: "/tweets"
@@ -7,7 +21,7 @@ class Stream extends Backbone.Model
     url: "/streams"
 
     initialize: =>
-        @set name: "New Search", keywords:null, tweets: {} 
+        @set name: "New Search", keywords:null, tweets: {}
 
 class TweetView extends Backbone.View
    
