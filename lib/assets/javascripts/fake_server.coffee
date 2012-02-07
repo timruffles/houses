@@ -13,16 +13,23 @@ apiUrl = (url) ->
 postBody = (xhr) -> JSON.parse(xhr.requestBody)
 
 responses =
+  user: (id) ->
+    console.log "fetching user..."
+    name: "phil"
+    id: "30cpodjc8"
+  streams: (id) ->
+      console.log "fetching streams..."
+      [{id:123, name:"foo", tweets:tweets},{id:456,name:"bar", tweets:tweets}]
   stream: (id) ->
-    name: "Evil estate agent house search"
+    name: "estate agent house search"
     keywords: "house hunting, I need flat, give me flat, OH GOD FLATS"
     id: "123"
     tweets: tweets
   streamCreate: (xhr) ->
-    console.log 'creating....'
+    console.log 'creating...'
     stream = postBody xhr
-    stream.id = "apoapiw"
-    stream.tweets = tweets
+    stream.id = "12310981"
+    stream.tweets = []
     stream
   streamUpdate: (xhr) ->
     console.log 'updating...'
@@ -34,6 +41,12 @@ examples = []
 setup = (method,url,handler,exampleData) ->
   server.respondWith method, url, handler
   examples.push arguments
+
+setup "GET", apiUrl("/users/(\\w+)"), (xhr,id) =>
+  json200 xhr, responses.user(id)
+
+setup "GET", apiUrl("/streams"), (xhr) =>
+    json200 xhr, responses.streams(1)
 
 setup "GET", apiUrl("/streams/(\\w+)"), (xhr,id) =>
   json200 xhr, responses.stream(id)
@@ -58,7 +71,7 @@ setup "PUT", apiUrl("/tweets"), (xhr) =>
   done: true
   state: "relevent"
 }
-
+###
 examples.forEach ([method,url,handler,exampleData]) ->
   url = url.toString().replace("/^","").replace("(\\w+)","areafprogksrigjosijfoisjr").replace(/\/$/,"")
   $.ajax 
@@ -69,3 +82,4 @@ examples.forEach ([method,url,handler,exampleData]) ->
     type: method
     success: (resp) ->
       console.log "#{method} to #{url}, response:", resp
+###
