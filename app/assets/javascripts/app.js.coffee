@@ -11,8 +11,6 @@
 
 # TODO use twitter anywhere to add hovercard, webintents. Web intents can make replying etc look v nice
 
-#
-# App model
 class App extends Backbone.Model
 
     initialize: =>
@@ -20,22 +18,24 @@ class App extends Backbone.Model
 
     login: =>
         # fake it for now
-        user = new User id:1
-        user.fetch url:"#{user.url}/#{user.id}"
-        @set user:user
         streams = new Streams()
-        streams.fetch()
-        @set streams:streams
-        @trigger "login"
+        user = new User
+        user.fetch
+          url: "/users/me"
+          success: =>
+            streams.fetch()
+            @trigger "login"
+          error: ->
+            @trigger "needs-login"
 
-#
-# Tweet model & collection
+        @set streams:streams
+        @set user:user
+
 class Tweet extends Backbone.Model
 class Tweets extends Backbone.Collection
     model: Tweet
     url: "/tweets"
-#
-# Stream model & collection
+
 class Stream extends Backbone.Model
 class Streams extends Backbone.Collection
     initialize: ->
@@ -44,13 +44,9 @@ class Streams extends Backbone.Collection
     url: "/streams"
 
 
-#
-# User model
 class User extends Backbone.Model
     url: "/users"
 
-#
-# Tweets view
 class TweetsView extends Backbone.View
 
     initialize: =>
@@ -67,8 +63,6 @@ class TweetsView extends Backbone.View
             parentEl:@el
         tweetView.render()
 
-#
-# Tweet view
 class TweetView extends Backbone.View
 
     tagName: "article"
@@ -98,8 +92,6 @@ class TweetView extends Backbone.View
         @$el.addClass "irelevant"
         @model.save state: "irelevant"
 
-#
-# Streams view
 class StreamsView extends Backbone.View
 
     el: "#streams"
@@ -116,8 +108,6 @@ class StreamsView extends Backbone.View
         streamView = new StreamView {model: stream}
         streamView.render()
 
-#
-# Stream view
 class StreamView extends Backbone.View
 
     tagName: "article"
@@ -216,8 +206,6 @@ class AppView extends Backbone.View
     newStream: =>
         (@model.get 'streams').create {name:'New Stream'}, {wait:true}
 
-# 
-# Router
 class AppRouter extends Backbone.Router
 
     routes:
@@ -227,8 +215,7 @@ class AppRouter extends Backbone.Router
         app = new App()
         appView = new AppView model:app
         app.login()
-# 
-# Start the app
+
 $ =>
     console.log ":o::> Teach the Bird! <::o:"
     router = new AppRouter()
