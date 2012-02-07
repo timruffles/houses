@@ -9,6 +9,8 @@
 //= require sinon
 //= require fake_server
 
+# TODO use twitter anywhere to add hovercard, webintents. Web intents can make replying etc look v nice
+
 #
 # App model
 class App extends Backbone.Model
@@ -36,8 +38,11 @@ class Tweets extends Backbone.Collection
 # Stream model & collection
 class Stream extends Backbone.Model
 class Streams extends Backbone.Collection
+    initialize: ->
+      # TODO connect to pusher, add new tweets to connection
     model: Stream
     url: "/streams"
+
 
 #
 # User model
@@ -83,6 +88,10 @@ class TweetView extends Backbone.View
             $(@options.parentEl).prepend @el
 
     markAsRelevant: =>
+        # TODO it's best to always update the view as the model is updated, not in view commands
+        # for instance, if the server sends us an update on the relevant state
+        # it won't be handelled. If it was written as @model.on "change:relevency", -> etc it would
+        # handle both cases
         @$el.addClass "relevant"
         @model.save state: "relevant"
     markAsIrelevant: =>
