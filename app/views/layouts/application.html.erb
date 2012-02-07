@@ -32,6 +32,8 @@
         </div>
       </section>
       <!-- Javascript -->
+      <div pub-key="<%= ENV['PN_PUB'] %>" sub-key="<%= ENV['PN_SUB'] %>" ssl="off" origin="pubsub.pubnub.com" id="pubnub"></div>
+      <script src="http://cdn.pubnub.com/pubnub-3.1.min.js"></script>
       <%= javascript_include_tag "app" %>
   </body>
 </html>

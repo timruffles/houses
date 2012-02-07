@@ -6,22 +6,19 @@
 
 //= require templates
 
-//= require sinon
-//= require fake_server
 
 # TODO use twitter anywhere to add hovercard, webintents. Web intents can make replying etc look v nice
+{Model,View,Collection,Router,Events} = Backbone
 
-class App extends Backbone.Model
+class App extends Model
 
     initialize: =>
-        _.extend @, Backbone.Events
+        _.extend @, Events
 
     login: =>
-        # fake it for now
         streams = new Streams()
         user = new User
-        user.fetch
-          url: "/users/me"
+        user.login
           success: =>
             streams.fetch()
             @trigger "login"
@@ -31,23 +28,32 @@ class App extends Backbone.Model
         @set streams:streams
         @set user:user
 
-class Tweet extends Backbone.Model
-class Tweets extends Backbone.Collection
+class Tweet extends Model
+class Tweets extends Collection
     model: Tweet
     url: "/tweets"
 
-class Stream extends Backbone.Model
-class Streams extends Backbone.Collection
+class Stream extends Model
     initialize: ->
-      # TODO connect to pusher, add new tweets to connection
+      PUBNUB.subscribe
+        channel: "search:#{@id}:tweets:add"
+        callback: (message) =>
+          @add message.tweet
+
+class Streams extends Collection
     model: Stream
     url: "/streams"
+    fetch: (opts = {}) ->
+      opts.url = "/streams/mine"
+      Collection::fetch.call this, opts
 
-
-class User extends Backbone.Model
+class User extends Model
     url: "/users"
+    login: (opts = {}) ->
+      opts.url = "/users/me"
+      @fetch opts
 
-class TweetsView extends Backbone.View
+class TweetsView extends View
 
     initialize: =>
         @collection.bind 'add', @renderTweet
@@ -63,14 +69,14 @@ class TweetsView extends Backbone.View
             parentEl:@el
         tweetView.render()
 
-class TweetView extends Backbone.View
+class TweetView extends View
 
     tagName: "article"
     className: "tweet"
 
     events:
         "click .yes": "markAsRelevant"
-        "click .no": "markAsIrelevant"
+        "click .no": "markAsIrrelevant"
 
     initialize: =>
         @$el.attr 'id', "tweet-#{@options.parentId}-#{@model.id}"
@@ -88,11 +94,11 @@ class TweetView extends Backbone.View
         # handle both cases
         @$el.addClass "relevant"
         @model.save state: "relevant"
-    markAsIrelevant: =>
-        @$el.addClass "irelevant"
-        @model.save state: "irelevant"
+    markAsIrrelevant: =>
+        @$el.addClass "irrelevant"
+        @model.save state: "irrelevant"
 
-class StreamsView extends Backbone.View
+class StreamsView extends View
 
     el: "#streams"
 
@@ -108,7 +114,7 @@ class StreamsView extends Backbone.View
         streamView = new StreamView {model: stream}
         streamView.render()
 
-class StreamView extends Backbone.View
+class StreamView extends View
 
     tagName: "article"
     className: "stream"
@@ -167,9 +173,7 @@ class StreamView extends Backbone.View
 
      delKeyword: (e) =>
 
-#
-# User view
-class UserView extends Backbone.View
+class UserView extends View
 
     el: "#user"
 
@@ -179,9 +183,7 @@ class UserView extends Backbone.View
     render: =>
         $('.user-name').html @model.get 'name'
 
-#
-# App view
-class AppView extends Backbone.View
+class AppView extends View
 
     el: "#app"
 
@@ -206,7 +208,7 @@ class AppView extends Backbone.View
     newStream: =>
         (@model.get 'streams').create {name:'New Stream'}, {wait:true}
 
-class AppRouter extends Backbone.Router
+class AppRouter extends Router
 
     routes:
         "login" : "login"
