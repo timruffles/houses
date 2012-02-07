@@ -17,7 +17,7 @@ responses =
     console.log "fetching user..."
     name: "phil"
     id: "30cpodjc8"
-  streams: (id) ->
+  streams: ->
       console.log "fetching streams..."
       [{id:123, name:"foo", tweets:tweets},{id:456,name:"bar", tweets:tweets}]
   stream: (id) ->
@@ -42,13 +42,13 @@ setup = (method,url,handler,exampleData) ->
   server.respondWith method, url, handler
   examples.push arguments
 
-setup "GET", apiUrl("/users/(\\w+)"), (xhr,id) =>
+setup "GET", apiUrl("/users/me"), (xhr,id) =>
   json200 xhr, responses.user(id)
 
-setup "GET", apiUrl("/streams"), (xhr) =>
-    json200 xhr, responses.streams(1)
+setup "GET", apiUrl("/streams/mine"), (xhr) =>
+    json200 xhr, responses.streams()
 
-setup "GET", apiUrl("/streams/(\\w+)"), (xhr,id) =>
+setup "GET", apiUrl("/streams/"), (xhr,id) =>
   json200 xhr, responses.stream(id)
 
 setup "POST", apiUrl("/streams"), (xhr) =>
