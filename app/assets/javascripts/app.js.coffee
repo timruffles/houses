@@ -6,6 +6,8 @@
 
 //= require templates
 
+//= require sinon
+//= require fake_server
 
 # TODO use twitter anywhere to add hovercard, webintents. Web intents can make replying etc look v nice
 {Model,View,Collection,Router,Events} = Backbone
