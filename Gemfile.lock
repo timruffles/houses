@@ -98,6 +98,9 @@ GEM
       activesupport (= 3.2.0)
       bundler (~> 1.0)
       railties (= 3.2.0)
+    rails-dev-tweaks (0.6.1)
+      actionpack (~> 3.1)
+      railties (~> 3.1)
     railties (3.2.0)
       actionpack (= 3.2.0)
       activesupport (= 3.2.0)
@@ -145,6 +148,7 @@ DEPENDENCIES
   omniauth-twitter
   pg
   rails (= 3.2.0)
+  rails-dev-tweaks
   redis
   sass-rails (~> 3.2.3)
   spork
