@@ -9,134 +9,218 @@
 //= require sinon
 //= require fake_server
 
-//= require twitter_ml
-
-
-class Tweet extends Backbone.Model
-   
-    url: "/tweets"
-
-class Stream extends Backbone.Model
-
-    url: "/streams"
+#
+# App model
+class App extends Backbone.Model
 
     initialize: =>
-        @set name: "New Search", keywords:null, tweets: {}
+        _.extend @, Backbone.Events
 
+    login: =>
+        # fake it for now
+        user = new User id:1
+        user.fetch url:"#{user.url}/#{user.id}"
+        @set user:user
+        streams = new Streams()
+        streams.fetch()
+        @set streams:streams
+        @trigger "login"
+
+#
+# Tweet model & collection
+class Tweet extends Backbone.Model
+class Tweets extends Backbone.Collection
+    model: Tweet
+    url: "/tweets"
+#
+# Stream model & collection
+class Stream extends Backbone.Model
+class Streams extends Backbone.Collection
+    model: Stream
+    url: "/streams"
+
+#
+# User model
+class User extends Backbone.Model
+    url: "/users"
+
+#
+# Tweets view
+class TweetsView extends Backbone.View
+
+    initialize: =>
+        @collection.bind 'add', @renderTweet
+
+    render: =>
+        if @collection.models.length > 0 then @$el.html ""
+        @collection.each (tweet) => @renderTweet tweet
+
+    renderTweet: (tweet) =>
+        tweetView = new TweetView
+            model: tweet
+            parentId:@options.parentId
+            parentEl:@el
+        tweetView.render()
+
+#
+# Tweet view
 class TweetView extends Backbone.View
-   
-    className: 'tweet'
-    tagName: 'li'
 
-    initialize: => 
-        @model.bind 'change', @render
+    tagName: "article"
+    className: "tweet"
 
     events:
         "click .yes": "markAsRelevant"
         "click .no": "markAsIrelevant"
 
-    render: => 
-        state = @model.get 'state'
-        yesBtn = "<a class='button small yes'>Yes</a>"
-        noBtn =  "<a class='button small no' >No</a>" 
-        text = (@model.get 'text').parseURL().parseUsername().parseHashtag()
-        html = "#{yesBtn} #{noBtn} <span class='text'>#{text}</span>"
-        $el = $ @el
-        id = @className + "-" + @model.id 
-        $el.attr class: @className + " " + @model.get 'state'
-        if $("##{id}").length is 0 
-            $el.attr id: id  
-            $('#tweets').append $el.html html
-        else
-            $el.html html
+    initialize: =>
+        @$el.attr 'id', "tweet-#{@options.parentId}-#{@model.id}"
+        @model.bind 'change', @render
+
+    render: =>
+        @$el.html _.template Templates.tweet, @model.toJSON()
+        if $('#'+@$el.attr 'id').length is 0
+            $(@options.parentEl).prepend @el
 
     markAsRelevant: =>
+        @$el.addClass "relevant"
         @model.save state: "relevant"
     markAsIrelevant: =>
+        @$el.addClass "irelevant"
         @model.save state: "irelevant"
 
-class StreamView extends Backbone.View 
+#
+# Streams view
+class StreamsView extends Backbone.View
 
-    el: "#stream"
+    el: "#streams"
 
-    events:    
-        "click #name-label": "editName"
-        "click #name-container a.button": "saveName"
-        "click #search": "search"
-    
     initialize: =>
-        if not @model then @model = new Stream()
-        @model.bind 'change', @render
-    
-    render: => 
-        @renderName()
-        if @model.id then @renderLink()
-        if @model.get 'keywords' then @renderKeywords()
+        @collection.bind 'add', @renderStream
+        @collection.bind 'reset', @render
+
+    render: =>
+        @collection.each (stream) =>
+            @renderStream stream
+
+    renderStream: (stream) =>
+        streamView = new StreamView {model: stream}
+        streamView.render()
+
+#
+# Stream view
+class StreamView extends Backbone.View
+
+    tagName: "article"
+    className: "stream"
+
+    events:
+        'click .settings-btn': 'settings'
+        'click .search-btn': 'addKeyword'
+
+    initialize: =>
+        @$el.attr 'id', "stream-#{@model.id or @model.cid}"
+        @model.on 'change', @change
+
+    change: =>
+        if @model.hasChanged 'keywords' then @renderKeywords()
+
+    render: =>
+        @$el.html _.template Templates.stream, @model.toJSON()
+        $('#streams').append @el
         @renderTweets()
+        if @model.get 'keywords' then @renderKeywords()
 
-    renderName: =>
-        tpl = "<span class='name' id='name-label'>#{@model.get 'name'}</span>"
-        $('#name-container').html tpl
-
-    renderLink: =>
-        link = "http://is.gd/R7dwI0e"
-        html = "Bookmark this stream: <a href='#{link}'>#{link}</a>"
-        $('#link-container').html html
+    renderTweets: =>
+        tweets = new Tweets @model.get 'tweets'
+        tweetsView = new TweetsView
+            collection:tweets
+            el:"#tweets-#{@model.id}"
+            parentId:@model.id
+        tweetsView.render()
 
     renderKeywords: =>
-        tpl = (keyword) -> "<span class='keyword'>#{keyword}</span>"
+        tpl = (keyword) ->
+            "<span class='keyword'>#{keyword} <span class='del'>x</span></span>"
         keywords = (@model.get 'keywords').split ','
-        $keywords = $('#keywords')
+        $keywords = @$el.find('.keywords')
         $keywords.html ""
         $keywords.append tpl keyword for keyword in keywords
 
-    renderTweets: =>
-        $('#tweets').html ""
-        tweets = @model.get 'tweets' 
-        ( 
-            (new TweetView model: (new Tweet tweet)).render()
-        ) for tweet in tweets
-  
-    editName: =>
-        name = @model.get 'name'
-        tpl = "<input type='text' value='#{name}'/> <a class='button'>save</a>"
-        $('#name-container').html tpl
+    settings: (e) =>
+        $settings = $(e.target).parent().find('.settings').first()
+        $settings.toggle()
+        if ($settings.css 'display') is 'none'
+            @$el.find('.tweets').css 'top', '51'
+            @$el.find('.stream-header').css 'height', '44px'
+        else
+            @$el.find('.tweets').css 'top', '201'
+            @$el.find('.stream-header').css 'height', '194px'
 
-    saveName: =>
-        name = $('#name-container input').first().val()
-        tpl = "<span class='name' id='name-label'>#{name}</span>"
-        $('#name-container').html tpl
-        @model.save {name: name}
-
-    search: =>
-        keyword = $('#search-input').val().trim()
+    addKeyword: =>
+        keyword = @$el.find('.search-input').val().trim()
         keywords = @model.get "keywords"
-        if keywords then keywords = keywords.split()
-        else keywords = []
+        if keywords then keywords = keywords.split() else keywords = []
         return if keyword is "" or keyword in keywords
         keywords.push keyword
-        @model.save {keywords: keywords.toString()}      
-#
-# Router
-#
-class AppRouter extends Backbone.Router
-   
-    routes:
-        ""           : "new"
-        "streams/:id": "stream"
-      
-    new: => 
-        @streamView = new StreamView()
-        @streamView.render()
+        @model.save {keywords: keywords.toString()}
+        @$el.find('.search-input').val("")
 
-    stream: (id) =>
-        @stream = new Stream { id: id }
-        @streamView = new StreamView { model: @stream }
-        @stream.fetch url: "#{@stream.url}/#{id}"
-  
-# Start the app
+     delKeyword: (e) =>
+
 #
+# User view
+class UserView extends Backbone.View
+
+    el: "#user"
+
+    initialize: =>
+        @model.bind 'change', @render
+
+    render: =>
+        $('.user-name').html @model.get 'name'
+
+#
+# App view
+class AppView extends Backbone.View
+
+    el: "#app"
+
+    initialize: =>
+        @model.on 'login', @login
+
+    events:
+        "click #new-stream-btn": "newStream"
+
+    login: =>
+        new UserView model:@model.get 'user'
+        new StreamsView collection:@model.get 'streams'
+        @render()
+
+    render: =>
+        @showApp()
+        @hideSplash()
+
+    showApp: => $('#app').css "display", "block"
+    hideSplash: => $('#splash').css "display", "none"
+
+    newStream: =>
+        (@model.get 'streams').create {name:'New Stream'}, {wait:true}
+
+# 
+# Router
+class AppRouter extends Backbone.Router
+
+    routes:
+        "login" : "login"
+
+    login: =>
+        app = new App()
+        appView = new AppView model:app
+        app.login()
+# 
+# Start the app
 $ =>
-    console.log "Welcome to the app!" 
-    window.app = new AppRouter()
+    console.log ":o::> Teach the Bird! <::o:"
+    router = new AppRouter()
     Backbone.history.start()

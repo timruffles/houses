@@ -67,7 +67,7 @@ class TweetView extends Backbone.View
         @model.bind 'change', @render
 
     render: =>
-        @$el.html _.template $("#tweet-tpl").html(), @model.toJSON()
+        @$el.html _.template tweetTemplate, @model.toJSON()
         if $('#'+@$el.attr 'id').length is 0
             $(@options.parentEl).prepend @el
 
@@ -115,7 +115,7 @@ class StreamView extends Backbone.View
         if @model.hasChanged 'keywords' then @renderKeywords()
 
     render: =>
-        @$el.html _.template $("#stream-tpl").html(), @model.toJSON()
+        @$el.html _.template streamTemplate, @model.toJSON()
         $('#streams').append @el
         @renderTweets()
         if @model.get 'keywords' then @renderKeywords()
