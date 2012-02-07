@@ -13,3 +13,7 @@ streamTemplate = """
   </section>
 """
 
+tweetTemplate = """
+  <span class="text"><%= text.parseURL().parseUsername().parseHashtag() %></span>
+  <span class="yes">Yes</span>/<span class="no">no</span>
+"""
