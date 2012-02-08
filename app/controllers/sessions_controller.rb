@@ -11,5 +11,6 @@ class SessionsController < ApplicationController
       user = User.create_with_omniauth(auth)
     end
     session[:user_id] = user.id
+    redirect_to "/"
   end
 end
