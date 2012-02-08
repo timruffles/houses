@@ -5,6 +5,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
     <title>Feed the bird!</title>
 
     <!-- Stylesheets -->
@@ -13,8 +14,6 @@
   <body>
       <%= yield %>
       <!-- Javascript -->
-      <div pub-key="<%= ENV['PN_PUB'] %>" sub-key="<%= ENV['PN_SUB'] %>" ssl="off" origin="pubsub.pubnub.com" id="pubnub"></div>
-      <script src="http://cdn.pubnub.com/pubnub-3.1.min.js"></script>
-      <%= javascript_include_tag "app" %>
+      <%= yield :javascript %>
   </body>
 </html>
