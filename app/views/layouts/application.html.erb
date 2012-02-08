@@ -11,26 +11,7 @@
     <%= stylesheet_link_tag "app" %>
   </head>
   <body>
-      <!-- Splash screen -->
-      <section id="splash">
-        <h1>Teach The Bird!</h1>
-        <a href="#login">Login</a>
-      </section>
-
-      <!-- The Application -->
-      <section id="app" style="display:none">
-        <header id="toolbar"><div class="toolbar-inner">
-          <h1>Teach the Bird</h1>
-          <span class="button" id="new-stream-btn">New Stream</span>
-          <section id="user">
-            <span class="user-name"></span>
-          </section>
-        </header>
-        <div id="container">
-            <section id="streams">
-            </section>
-        </div>
-      </section>
+      <%= yield %>
       <!-- Javascript -->
       <div pub-key="<%= ENV['PN_PUB'] %>" sub-key="<%= ENV['PN_SUB'] %>" ssl="off" origin="pubsub.pubnub.com" id="pubnub"></div>
       <script src="http://cdn.pubnub.com/pubnub-3.1.min.js"></script>
