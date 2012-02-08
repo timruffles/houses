@@ -7,26 +7,23 @@
 
 //= require templates
 
-//= require sinon
-//= require fake_server
-
 # TODO use twitter anywhere to add hovercard, webintents. Web intents can make replying etc look v nice
 {Model,View,Collection,Router,Events} = Backbone
 
+window.authorised = (user) ->
+  window.app.get("user").loginAs(user)
+
+
 class App extends Model
+    initialize: ->
+      streams = new Streams()
+      user = new User
+      user.on "login", ->
+        streams.fetch()
 
-    login: =>
-        streams = new Streams()
-        user = new User
-        user.login
-          success: =>
-            streams.fetch()
-            @trigger "login"
-          error: ->
-            @trigger "needs-login"
-
-        @set streams:streams
-        @set user:user
+      @set streams:streams
+      @set user:user
+      user.login()
 
 class Tweet extends Model
 class Tweets extends Collection
@@ -51,7 +48,14 @@ class User extends Model
     url: "/users"
     login: (opts = {}) ->
       opts.url = "/users/me"
-      @fetch opts
+      @fetch _.extend opts,
+        success: =>
+          @trigger "login"
+        error: =>
+          @trigger "needs-login"
+    loginAs: (user) ->
+      @set user
+      @trigger "login"
 
 class TweetsView extends View
 
@@ -114,11 +118,9 @@ class StreamsView extends View
     initialize: =>
         @collection.bind 'add', @renderStream
         @collection.bind 'reset', @render
-
+        @render()
     render: =>
-        @collection.each (stream) =>
-            @renderStream stream
-
+        @collection.each @renderStream
     renderStream: (stream) =>
         streamView = new StreamView {model: stream}
         streamView.render()
@@ -197,37 +199,16 @@ class AppView extends View
     el: "#app"
 
     initialize: =>
-        @model.on 'login', @login
+        new UserView model:@model.get 'user'
+        new StreamsView collection:@model.get 'streams'
 
     events:
         "click #new-stream-btn": "newStream"
 
-    login: =>
-        new UserView model:@model.get 'user'
-        new StreamsView collection:@model.get 'streams'
-        @render()
-
-    render: =>
-        @showApp()
-        @hideSplash()
-
-    showApp: => $('#app').css "display", "block"
-    hideSplash: => $('#splash').css "display", "none"
-
     newStream: =>
-        (@model.get 'streams').create {name:'New Stream'}, {wait:true}
+        @model.get('streams').create {name:'New Stream'}, {wait:true}
 
-class AppRouter extends Router
-
-    routes:
-        "login" : "login"
-
-    login: =>
-        app = new App()
-        appView = new AppView model:app
-        app.login()
-
-$ =>
+window.app = app = new App()
+$ ->
+    window.appView = appView = new AppView model:app
     console.log ":o::> Teach the Bird! <::o:"
-    router = new AppRouter()
-    Backbone.history.start()

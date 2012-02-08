@@ -1,31 +1,39 @@
-<!-- Splash screen -->
-<section id="splash">
+<% unless current_user %>
+  <section id="splash">
 
-  <section id="headline">
-    <h1>
-       Imagine a feed with <em>only</em> the tweets you're interested in
-    </h1>
-    <h2>
-      Get a feed of sales leads, customer enquireies, marketing opportunities, and no noise.
-    </h2>
-  </section>
-  <section id="extra">
-    
-  </section>
-</section>
-
-<!-- The Application -->
-<section id="app" style="display:none">
-  <header id="toolbar"><div class="toolbar-inner">
-    <h2>Teach the Bird</h2>
-    <span class="button" id="new-stream-btn">New Stream</span>
-    <section id="user">
-      <span class="user-name"></span>
+    <section id="headline">
+      <h1>
+         100% interesting tweets
+      </h1>
+      <h2>
+        Create a feed of sales leads, customer enquireies, marketing opportunities, without noise.
+      </h2>
     </section>
-  </header>
-  <div id="container">
-      <section id="streams">
+    <section id="extra">
+      <h2>Get started</h2>
+      <a href="/auth/twitter" target="_blank">
+        <img src="https://si0.twimg.com/images/dev/buttons/sign-in-with-twitter-l.png" />
+      </a>
+    </section>
+  </section>
+<% else %>
+  <% content_for :javascript do %>
+    <div pub-key="<%= ENV['PN_PUB'] %>" sub-key="<%= ENV['PN_SUB'] %>" ssl="off" origin="pubsub.pubnub.com" id="pubnub"></div>
+    <script src="http://cdn.pubnub.com/pubnub-3.1.min.js"></script>
+    <%= javascript_include_tag "app" %>
+  <% end %>
+  <!-- The Application -->
+  <section id="app">
+    <header id="toolbar"><div class="toolbar-inner">
+      <h2>Teach the Bird</h2>
+      <span class="button" id="new-stream-btn">New Stream</span>
+      <section id="user">
+        <span class="user-name"></span>
       </section>
-  </div>
-</section>
-
+    </header>
+    <div id="container">
+        <section id="streams">
+        </section>
+    </div>
+  </section>
+<% end %>
