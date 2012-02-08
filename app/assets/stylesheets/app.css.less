@@ -6,15 +6,28 @@
 @white: #FFFFFF;
 @lgrey: #EEEEEE;
 
-::-webkit-scrollbar { 
-    width: 7px;
-    height: 15px;
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px; 
+}
+::-webkit-scrollbar:hover {
+    
 }
 ::-webkit-scrollbar-thumb:vertical {
     height: 30px;
-    border: 1px solid darken(@lgrey,10);
-    background: darken(@lgrey,5);
+    border: 1px solid lighten(@dgrey,20);
+    background: lighten(@dgrey,30);
 }
+::-webkit-scrollbar-thumb:horizontal {
+    width: 50px;
+    border: 1px solid lighten(@dgrey,20);
+    background: lighten(@dgrey,30); 
+}
+
+::-webkit-scrollbar-track-piece {
+    background-color: @white; 
+}
+
 
 html, body{
     height:100%;
