@@ -1,5 +1,5 @@
 //= require jquery.min
-//= require jquery.timeago.js.min
+//= require jquery.timeago.js
 //= require underscore.min
 //= require backbone.min
 //= require tweets
