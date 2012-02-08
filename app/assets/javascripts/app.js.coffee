@@ -1,4 +1,5 @@
 //= require jquery.min
+//= require jquery.timeago.js.min
 //= require underscore.min
 //= require backbone.min
 //= require tweets
@@ -13,9 +14,6 @@
 {Model,View,Collection,Router,Events} = Backbone
 
 class App extends Model
-
-    initialize: =>
-        _.extend @, Events
 
     login: =>
         streams = new Streams()
@@ -83,12 +81,14 @@ class TweetView extends View
     initialize: =>
         @$el.attr 'id', "tweet-#{@options.parentId}-#{@model.id}"
         @model.on 'change', @render
+        @$el.mouseenter(@showActions).mouseleave(@hideActions)
   
     render: =>
         @$el.attr 'class', "#{@className} #{@model.get 'state'}"
         @$el.html _.template Templates.tweet, @model.toJSON() 
         if $("##{@$el.attr 'id'}").length is 0
             $(@options.parentEl).prepend @el
+        @$('.time-ago').timeago()
 
     markAsRelevant: => 
         @changeState "relevant" 
@@ -98,6 +98,14 @@ class TweetView extends View
     
     changeState: (state) =>
         (@model.save state:state) if (@model.get 'state') isnt state
+
+    showActions: =>
+        @$('.time-ago').css 'display', 'none'
+        @$('.actions').css 'display', 'block'
+
+    hideActions: =>
+        @$('.time-ago').css 'display', 'block'
+        @$('.actions').css 'display', 'none'
 
 class StreamsView extends View
 

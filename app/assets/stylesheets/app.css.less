@@ -27,7 +27,7 @@ body{
     background-color:@lgrey;
     position:absolute;
 }
-body, p, li { 
+body { 
     #font > .sans-serif();
     font-size:14px;
     color: darken(@dgrey,1);
@@ -104,7 +104,7 @@ body, p, li {
     -moz-border-top-right-radius: @radius;
     border-top-right-radius: @radius;
     background-color: @white;
-    color: @blue;
+    color: darken(@blue,10);
     border: 1px solid darken(@lgrey,10);
     position: relative;
     height: 44px;
@@ -157,9 +157,9 @@ body, p, li {
         }
         .keyword {
             display:inline-block;
-            background-color:lighten(@blue,10);
+            background-color:@blue;
             color:@white;
-            border: solid 1px lighten(@blue,1);
+            border: solid 1px darken(@blue,10);
             margin:5px 5px 5px 0;
             padding: 3px 6px;
             .border-radius(3px);
@@ -187,16 +187,48 @@ body, p, li {
     word-wrap: break-word;
 }
 
-.tweet .yes, .tweet .no{
-    cursor:pointer;
-    &:hover{text-decoration:underline;}
-}
-.tweet .yes{
-    color:green;
-}
-.tweet .no{
-    color:red;
-}
+.tweet{
+    padding:5px 5px 5px 62px;
+    position:relative;
+    font-size:12px;
+    line-height:16px;
+    color: @dgrey;
+    border-bottom: solid 1px @lgrey;
+    
+    &.relevant .text, .relevant .text a{ color:green; }
+    &.irrelevant{ display:none; }
 
-.tweet.relevant .text, .tweet.relevant .text a{ color:green; }
-.tweet.irrelevant{ display:none; }
+    a {
+        color:darken(@blue,20);
+        text-decoration:none;
+        &:hover{text-decoration:underline;}
+    }
+    
+    .username{
+        font-size:14px;
+        color: darken(@dgrey,10);
+        font-weight:600; 
+    }
+    .screenname {
+        a {
+            color:@dgrey;
+            text-decoration:none;
+            &:hover{text-decoration:underline;}
+        }
+        color: lighten(@dgrey,20);
+    }
+    
+    .profile_image{
+        position: absolute;
+        top: 5px;
+        left: 5px;
+        width: 48px;
+        height: 48px;
+    }
+    .yes, .no{
+        cursor:pointer;
+        &:hover{text-decoration:underline;}
+    }
+    .yes{ color:green; }
+    .no { color:red; }
+}

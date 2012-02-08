@@ -14,6 +14,13 @@ window.Templates =
     </section>
   """
   tweet: """
+    <img class="profile_image" src="<%=user.profile_image_url%>" />
+    <p>
+       <span class="username"><%=user.name%></span>
+        <span class="screenname"><%=('@'+user.screen_name).parseUsername()%> 
+    </p>
     <span class="text"><%= text.parseURL().parseUsername().parseHashtag() %></span>
-    <span class="yes">Yes</span>/<span class="no">no</span>
+    <div class="time-ago" title="<%=created_at%>"></div>
+    <div class="actions" style="display:none"><span class="yes">Yes</span> | <span
+    class="no">no</span></div>
   """
