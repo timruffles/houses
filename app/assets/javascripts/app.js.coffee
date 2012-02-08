@@ -1,6 +1,7 @@
 //= require jquery.min
 //= require jquery.timeago.js
 //= require underscore.min
+//= require core_ext
 //= require backbone.min
 //= require tweets
 //= require tweet-parsers
@@ -12,6 +13,70 @@
 
 window.authorised = (user) ->
   window.app.get("user").loginAs(user)
+
+authenticityToken = false
+
+methodMap =
+  create: "POST"
+  update: "PUT"
+  delete: "DELETE"
+  read: "GET"
+
+ transformKeys = (stringTransform) ->
+    transformer = (obj) ->
+      image = {}
+      if typeof obj == "object"
+        if _.isArray(obj)
+          return _.map obj, (mem) -> transformer(mem)
+        for own key, val of obj
+          # remember typeof null === "object". lulz ensue
+          val = if _.isArray val
+                  _.map val, transformer
+                else
+                  if val? and typeof val is "object" then transformer(val) else val
+          image[key[stringTransform]()] = val
+        image
+      else
+        obj
+
+camelize = transformKeys("camelize")
+
+underscore = transformKeys("underscore")
+
+Model::sync = Collection::sync = sync = (method,model,options = {}) ->
+
+  type = methodMap[method]
+
+  params = _.extend
+    type: type
+    dataType: "json"
+  , options
+
+  params.url = getUrl(method,model,params) unless params.url
+  params.url += ".json"
+
+  switch method
+    when "create","update","delete"
+      params.headers ||= {}
+      params.headers["X-CSRF-Token"] = authenticityToken
+  switch method
+    when "create", "update"
+      params.data = JSON.stringify underscore model.toJSON()
+      params.contentType = "application/json"
+
+  {success,error} = params
+  params.success = (resp,status,xhr) ->
+    console.log "http response", resp, params
+    if success
+      # don't pass through HTTP implementation details to model layer
+      success camelize(resp), status, xhr
+  params.error = ->
+    console.log "http error resp", arguments
+    error(arguments...) if error
+
+  params.processData = false if params.type isnt "GET" and not Backbone.emulateJSON
+  $.ajax params
+
 
 
 class App extends Model
@@ -35,6 +100,7 @@ class Stream extends Model
       PUBNUB.subscribe
         channel: "search:#{@id}:tweets:add"
         callback: (message) =>
+          message = camelize message
           @add message.tweet
 
 class Streams extends Collection
@@ -208,7 +274,8 @@ class AppView extends View
     newStream: =>
         @model.get('streams').create {name:'New Stream'}, {wait:true}
 
-window.app = app = new App()
 $ ->
-    window.appView = appView = new AppView model:app
-    console.log ":o::> Teach the Bird! <::o:"
+  authenticityToken = $("[name=csrf-token]").attr("content")
+  window.app = app = new App()
+  window.appView = appView = new AppView model:app
+  console.log ":o::> Teach the Bird! <::o:"
