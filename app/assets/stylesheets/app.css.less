@@ -26,8 +26,6 @@ body{
     width:100%;
     background-color:@lgrey;
     position:absolute;
-}
-body { 
     #font > .sans-serif();
     font-size:14px;
     color: darken(@dgrey,1);
@@ -42,7 +40,7 @@ body {
     #gradient > .vertical(@dgrey,darken(@dgrey,15));
     .toolbar-inner{
         padding:10px 10px 10px 10px;
-        h1{ 
+        h2{ 
             color: @lgrey;
             font-size:24;
             display: inline-block;
@@ -52,25 +50,20 @@ body {
             position:relative;
             cursor:pointer;
             background-color:lighten(@dgrey,2);
-            &:hover{
-                background-color:lighten(@dgrey,5);
-            }
-            &:active{
-                top:1px;
-                
-            }
+            &:hover{background-color:lighten(@dgrey,5);}
+            &:active{top:1px;}
             padding:5px;
             margin-left:20px;
             color:@lgrey;
             .border-radius(5px);
             border: solid 1px lighten(@dgrey,10);
         }
-        #user{
+        .user-name{ 
+            display:inline-block;
             float:right;
             color: @lgrey;
             font-size:18;
         }
-
     }
 }
 #container{

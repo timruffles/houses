@@ -186,8 +186,6 @@ class StreamView extends View
 
 class UserView extends View
 
-    el: "#user"
-
     initialize: =>
         @model.bind 'change', @render
 
