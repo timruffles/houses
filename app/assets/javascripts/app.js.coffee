@@ -82,23 +82,22 @@ class TweetView extends View
 
     initialize: =>
         @$el.attr 'id', "tweet-#{@options.parentId}-#{@model.id}"
-        @model.bind 'change', @render
-
+        @model.on 'change', @render
+  
     render: =>
-        @$el.html _.template Templates.tweet, @model.toJSON()
-        if $('#'+@$el.attr 'id').length is 0
+        @$el.attr 'class', "#{@className} #{@model.get 'state'}"
+        @$el.html _.template Templates.tweet, @model.toJSON() 
+        if $("##{@$el.attr 'id'}").length is 0
             $(@options.parentEl).prepend @el
 
-    markAsRelevant: =>
-        # TODO it's best to always update the view as the model is updated, not in view commands
-        # for instance, if the server sends us an update on the relevant state
-        # it won't be handelled. If it was written as @model.on "change:relevency", -> etc it would
-        # handle both cases
-        @$el.addClass "relevant"
-        @model.save state: "relevant"
-    markAsIrrelevant: =>
-        @$el.addClass "irrelevant"
-        @model.save state: "irrelevant"
+    markAsRelevant: => 
+        @changeState "relevant" 
+    
+    markAsIrrelevant: => 
+        @changeState "irrelevant" 
+    
+    changeState: (state) =>
+        (@model.save state:state) if (@model.get 'state') isnt state
 
 class StreamsView extends View
 
