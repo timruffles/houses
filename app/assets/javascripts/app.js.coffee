@@ -5,8 +5,9 @@
 //= require backbone.min
 //= require tweets
 //= require tweet-parsers
-
 //= require templates
+#//= require sinon
+#//= require fake_server
 
 # TODO use twitter anywhere to add hovercard, webintents. Web intents can make replying etc look v nice
 {Model,View,Collection,Router,Events} = Backbone
@@ -97,7 +98,7 @@ class Tweets extends Collection
 
 class Stream extends Model
     initialize: ->
-      PUBNUB.subscribe
+      PUBNUB?.subscribe
         channel: "search:#{@id}:tweets:add"
         callback: (message) =>
           message = camelize message
@@ -154,7 +155,7 @@ class TweetView extends View
         @$el.mouseenter(@showActions).mouseleave(@hideActions)
   
     render: =>
-        @$el.attr 'class', "#{@className} #{@model.get 'state'}"
+        @$el.attr 'class', "#{@className} #{@model.get 'state'}" 
         @$el.html _.template Templates.tweet, @model.toJSON() 
         if $("##{@$el.attr 'id'}").length is 0
             $(@options.parentEl).prepend @el
