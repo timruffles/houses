@@ -103,6 +103,19 @@ class Stream extends Model
         callback: (message) =>
           message = camelize message
           @add message.tweet
+      @keywordCollection = new Collection
+        model: Model.extend idAttribute: "word"
+      @keywordCollection.bind "add", @syncKeywords
+      @keywordCollection.bind "remove", @syncKeywords
+      @keywordCollection.reset (@get('keywords') || "").map (w) -> {word: w}
+    syncKeywords: ->
+      @save {keywords: @keywordCollection.pluck("word").join(", ")}
+    addKeyword: (keyword) ->
+      return false if keyword is "" or @keywordCollection.get(keyword)
+      @keywordCollection.add word: keyword
+      true
+    removeKeyword: (keyword) ->
+      @keywordCollection.remove(keyword)
 
 class Streams extends Collection
     model: Stream
@@ -155,20 +168,20 @@ class TweetView extends View
         @$el.mouseenter(@showActions).mouseleave(@hideActions)
   
     render: =>
-        @$el.attr 'class', "#{@className} #{@model.get 'state'}" 
+        @$el.attr 'class', "#{@className} #{@model.get 'category'}"
         @$el.html _.template Templates.tweet, @model.toJSON() 
         if $("##{@$el.attr 'id'}").length is 0
             $(@options.parentEl).prepend @el
         @$('.time-ago').timeago()
 
     markAsRelevant: => 
-        @changeState "relevant" 
+        @changeState "interesting"
     
     markAsIrrelevant: => 
-        @changeState "irrelevant" 
+        @changeState "boring"
     
     changeState: (state) =>
-        (@model.save state:state) if (@model.get 'state') isnt state
+        (@model.save state:state) if (@model.get 'category') isnt state
 
     showActions: =>
         @$('.time-ago').css 'display', 'none'
@@ -200,6 +213,7 @@ class StreamView extends View
     events:
         'click .settings-btn': 'settings'
         'click .search-btn': 'addKeyword'
+        'click .del': 'removeKeyword'
 
     initialize: =>
         @$el.attr 'id', "stream-#{@model.id or @model.cid}"
@@ -230,6 +244,12 @@ class StreamView extends View
         $keywords.html ""
         $keywords.append tpl keyword for keyword in keywords
 
+    removeKeyword: (evt) ->
+        $el = $(evt.currentTarget)
+        keyword = el.html().trim()
+        @model.removeKeyword(keyword)
+        el.remove()
+
     settings: (e) =>
         $settings = $(e.target).parent().find('.settings').first()
         $settings.toggle()
@@ -242,12 +262,8 @@ class StreamView extends View
 
     addKeyword: =>
         keyword = @$el.find('.search-input').val().trim()
-        keywords = @model.get "keywords"
-        if keywords then keywords = keywords.split() else keywords = []
-        return if keyword is "" or keyword in keywords
-        keywords.push keyword
-        @model.save {keywords: keywords.toString()}
-        @$el.find('.search-input').val("")
+        if @model.addKeyword keyword
+          @$el.find('.search-input').val("")
 
      delKeyword: (e) =>
 
