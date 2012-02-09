@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120206192738) do
+ActiveRecord::Schema.define(:version => 20120209164644) do
 
   create_table "classified_tweets", :force => true do |t|
     t.integer "search_id",              :null => false
@@ -21,7 +21,7 @@ ActiveRecord::Schema.define(:version => 20120206192738) do
 
   create_table "searches", :force => true do |t|
     t.integer  "user_id",    :null => false
-    t.string   "keywords",   :null => false
+    t.string   "keywords"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
   end
