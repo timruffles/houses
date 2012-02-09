@@ -1,1 +1,1 @@
-background: wibble modules/processes/app/pull_push.coffee
+background: bundle exec coffee modules/processes/app/pull_push.coffee
