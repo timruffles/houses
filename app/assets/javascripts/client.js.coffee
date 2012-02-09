@@ -81,7 +81,7 @@ class App extends Model
       user.login()
     maxStreams: 4
     canMakeStream: ->
-      @get('streams').length() < @maxStreams
+      @get('streams').length < @maxStreams
 
 class Tweet extends Model
 class Tweets extends Collection
@@ -99,7 +99,7 @@ class Stream extends Model
         model: Model.extend(idAttribute: "word")
       @keywordCollection.bind "add", @syncKeywords
       @keywordCollection.bind "remove", @syncKeywords
-      @keywordCollection.reset (@get('keywords') || "").map (w) -> {word: w}
+      @keywordCollection.reset (@get('keywords') || "").split(",").map (w) -> {word: w}
     syncKeywords: ->
       @save {keywords: @keywordCollection.pluck("word").join(", ")}
     addKeyword: (keyword) ->

@@ -6,7 +6,5 @@
 //= require tweets
 //= require tweet-parsers
 //= require templates
-#//= require sinon
-#//= require fake_server
 
 //= require client
