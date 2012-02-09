@@ -95,24 +95,29 @@ class Tweets extends Collection
 
 class Stream extends Model
     initialize: ->
-      PUBNUB.subscribe
-        channel: "search:#{@id}:tweets:add"
-        callback: (message) =>
-          message = camelize message
-          @add message.tweet
-      @keywordCollection = new Collection
-        model: Model.extend(idAttribute: "word")
-      @keywordCollection.bind "add", @syncKeywords
-      @keywordCollection.bind "remove", @syncKeywords
-      @keywordCollection.reset (@get('keywords') || "").split(",").map (w) -> {word: w}
-    syncKeywords: =>
-      @save {keywords: @keywordCollection.pluck("word").join(", ")}
-    addKeyword: (keyword) ->
-      return false if keyword is "" or @keywordCollection.get(keyword)
-      @keywordCollection.add word: keyword
-      true
-    removeKeyword: (keyword) ->
-      @keywordCollection.remove(keyword)
+        PUBNUB?.subscribe
+            channel: "search:#{@id}:tweets:add"
+            callback: (message) =>
+                message = camelize message
+                @add message.tweet
+        
+        @keywordCollection = new (Collection.extend
+            model: Model.extend(idAttribute: "word")
+        )
+        @keywordCollection.on "add", @syncKeywords
+        @keywordCollection.on "remove", @syncKeywords
+        @keywordCollection.reset (@get('keywords') || "").split(",").map((w) -> w.trim()).filter((w) ->w != "").map((w) -> {word: w})
+    
+    syncKeywords: => 
+        @save {keywords: @keywordCollection.pluck("word").join(", ")} 
+    keywords: =>
+        @keywordCollection.pluck("word")
+    addKeyword: (keyword) =>
+        return false if keyword is "" or @keywordCollection.get(keyword)
+        @keywordCollection.add word: keyword
+        true
+    removeKeyword: (keyword) =>
+        @keywordCollection.remove(keyword)
 
 class Streams extends Collection
     model: Stream
@@ -141,7 +146,7 @@ class TweetsView extends View
 
     render: =>
         if @collection.models.length > 0 then @$el.html ""
-        @collection.each (tweet) => @renderTweet tweet
+        @collection.each @renderTweet
 
     renderTweet: (tweet) =>
         tweetView = new TweetView
@@ -178,7 +183,7 @@ class TweetView extends View
         @changeState "boring"
     
     changeState: (state) =>
-        (@model.save state:state) if (@model.get 'category') isnt state
+        (@model.save category:state) if (@model.get 'category') isnt state
 
     showActions: =>
         @$('.time-ago').css 'display', 'none'
@@ -200,7 +205,6 @@ class StreamsView extends View
         @collection.each @renderStream
     renderStream: (stream) =>
         streamView = new StreamView {model: stream}
-        streamView.render()
 
 class StreamView extends View
 
@@ -208,22 +212,20 @@ class StreamView extends View
     className: "stream"
 
     events:
-        'click .settings-btn': 'settings'
+        'click .settings-btn': 'toggleSettings'
         'click .search-btn': 'addKeyword'
         'click .del': 'removeKeyword'
 
     initialize: =>
         @$el.attr 'id', "stream-#{@model.id or @model.cid}"
-        @model.on 'change', @change
-
-    change: =>
-        if @model.hasChanged 'keywords' then @renderKeywords()
+        @render()
+        @model.on 'change:keywords', @renderKeywords
 
     render: =>
         @$el.html _.template Templates.stream, @model.toJSON()
         $('#streams').append @el
         @renderTweets()
-        if @model.get 'keywords' then @renderKeywords()
+        @renderKeywords()
 
     renderTweets: =>
         tweets = new Tweets @model.get 'tweets'
@@ -235,41 +237,42 @@ class StreamView extends View
 
     renderKeywords: =>
         tpl = (keyword) ->
-            "<span class='keyword'>#{keyword} <span class='del'>x</span></span>"
-        keywords = (@model.get 'keywords').split ','
-        $keywords = @$el.find('.keywords')
+            "<span class='keyword'><span class='word'>#{keyword}</span>
+             <span class='del'>x</span></span>"
+        $keywords = @$('.keywords')
         $keywords.html ""
-        $keywords.append tpl keyword for keyword in keywords
+        $keywords.append tpl keyword for keyword in @model.keywords()
+        @adjustSettingsSize()
+
+    toggleSettings: =>
+        @$('.settings').toggle()
+        @adjustSettingsSize()
+
+    adjustSettingsSize: =>
+        if (@$('.settings').css 'display') is 'none'
+            @$('.tweets').css 'top', '51'
+            @$('.stream-header').css 'height', '44px'
+        else 
+            h = 60 + parseInt @$('.settings').css('height').replace('px', '')
+            @$('.tweets').css 'top', "#{10+h}"
+            @$('.stream-header').css 'height', "#{h}px"
+    
+    addKeyword: =>
+        $input = @$('.search-input')
+        keyword = $input.val().trim()
+        if @model.addKeyword keyword
+            $input.val("")
 
     removeKeyword: (evt) ->
-        $el = $(evt.currentTarget)
-        keyword = el.html().trim()
-        @model.removeKeyword(keyword)
-        el.remove()
-
-    settings: (e) =>
-        $settings = $(e.target).parent().find('.settings').first()
-        $settings.toggle()
-        if ($settings.css 'display') is 'none'
-            @$el.find('.tweets').css 'top', '51'
-            @$el.find('.stream-header').css 'height', '44px'
-        else
-            @$el.find('.tweets').css 'top', '201'
-            @$el.find('.stream-header').css 'height', '194px'
-
-    addKeyword: =>
-        keyword = @$el.find('.search-input').val().trim()
-        if @model.addKeyword keyword
-          @$el.find('.search-input').val("")
-
-     delKeyword: (e) =>
+        word = $(evt.currentTarget).parent().find('.word').html().trim()
+        @model.removeKeyword(word)
 
 class UserView extends View
 
     el: "#user"
 
     initialize: =>
-        @model.bind 'change', @render
+        @model.on 'change', @render
 
     render: =>
         $('.user-name').html @model.get 'name'

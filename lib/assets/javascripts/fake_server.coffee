@@ -19,7 +19,7 @@ responses =
     id: "30cpodjc8"
   streams: ->
       console.log "fetching streams..."
-      [{id:123, name:"foo", tweets:tweets},{id:456,name:"bar", tweets:tweets}]
+      [{id:123, name:"foo", tweets:tweets, keywords:""},{id:456,name:"bar", tweets:tweets, keywords:""}]
   stream: (id) ->
     name: "estate agent house search"
     keywords: "house hunting, I need flat, give me flat, OH GOD FLATS"
@@ -48,10 +48,10 @@ setup "GET", apiUrl("/users/me"), (xhr,id) =>
 setup "GET", apiUrl("/streams/mine"), (xhr) =>
     json200 xhr, responses.streams()
 
-setup "GET", apiUrl("/streams/"), (xhr,id) =>
-  json200 xhr, responses.stream(id)
+setup "GET", apiUrl("/streams/:id"), (xhr,id) =>
+    json200 xhr, responses.stream(id)
 
-setup "POST", apiUrl("/streams"), (xhr) =>
+setup "POST", apiUrl("/streams/:id"), (xhr) =>
   json200 xhr, responses.streamCreate(xhr)
 , {
     name: "Evil estate agent house search"
@@ -64,7 +64,7 @@ setup "PUT", apiUrl("/streams"), (xhr) =>
     keywords: "new list of keywords"
 }
 
-setup "PUT", apiUrl("/tweets"), (xhr) =>
+setup "PUT", apiUrl("/tweets/:id"), (xhr) =>
   json200 xhr, responses.tweetUpdate(xhr)
 , {
   id: "141522834898960384"
@@ -83,3 +83,4 @@ examples.forEach ([method,url,handler,exampleData]) ->
     success: (resp) ->
       console.log "#{method} to #{url}, response:", resp
 ###
+
