@@ -8,7 +8,7 @@ json200 = (xhr,response) ->
   xhr.respond array...
 
 apiUrl = (url) ->
-  new RegExp("^#{url}".replace(/:id/g,"(\\d+)"))
+  new RegExp("^#{url}.json".replace(/:id/g,"(\\d+)"))
 
 postBody = (xhr) -> JSON.parse(xhr.requestBody)
 
