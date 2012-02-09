@@ -28,7 +28,7 @@ responses =
   streamCreate: (xhr) ->
     console.log 'creating...'
     stream = postBody xhr
-    stream.id = "12310981"
+    stream.id = Math.random()*10
     stream.tweets = []
     stream
   streamUpdate: (xhr) ->
