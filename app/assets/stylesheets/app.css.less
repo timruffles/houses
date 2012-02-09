@@ -109,7 +109,7 @@ body{
     float: left;
     margin: 3px;
     height: 100%;
-    width: 328px;
+    width: 332px;
 }
 
 .stream-header {
@@ -130,7 +130,36 @@ body{
         padding:10px;
         font-size:24px;
         float:left;
+        cursor:pointer;
+        font-weight:700;
+        &:hover + .edit-name{
+        display:inline-block;
+        }
+        input[type=text]{
+            height:25px;
+            font-size:18px;
+            color:darken(@blue,10);
+        }
     }
+    .edit-name {
+        cursor:pointer;
+        display:none;
+        margin-right:5px;
+        margin-top:13px;
+        font-size:24px;
+        &:before { content: '\270e'; }
+        color:darken(@blue,10);
+    }
+    .save-name {
+        display:none;
+        cursor:pointer;
+        margin-right:5px;
+        margin-top:13px;
+        font-size:24px;
+        &:before { content: '\e008'; }
+        color:darken(@blue,10);
+    }
+
     .settings-btn{
         color:darken(@lgrey,10);
         margin-right:5px;
@@ -165,7 +194,7 @@ body{
         }
         .keywords{
             margin-top:10px;
-            width:318px;
+            width:320px;
         }
         .keyword {
             display:inline-block;
@@ -187,7 +216,7 @@ body{
 }
 
 .tweets {
-    width:316px;
+    width:320px;
     padding:5px;
     background-color: @white;
     border: 1px solid darken(@lgrey,10);

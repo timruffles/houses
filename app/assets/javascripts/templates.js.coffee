@@ -1,7 +1,9 @@
 window.Templates =
   stream: """
-    <header class="stream-header">
-      <h1 class="name"><%= name %></h1> 
+    <header class="stream-header"> 
+      <h1 class="name"><%= name %></span></h1>
+      <span class="iconic edit-name"></span>
+      <span class="iconic save-name"></span>
       <span class="settings-btn iconic"> </span>
       <section class="settings" style="display:none">
           <input class="search-input" type="text"/>

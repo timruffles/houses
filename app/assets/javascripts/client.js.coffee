@@ -84,7 +84,7 @@ class App extends Model
       @set streams:streams
       @set user:user
       user.login()
-    maxStreams: 4
+    maxStreams: 3
     canMakeStream: ->
       @get('streams').length < @maxStreams
 
@@ -210,16 +210,21 @@ class StreamView extends View
 
     tagName: "article"
     className: "stream"
-
     events:
+        'click .name': 'editName'
+        'submit .edit-name-form': 'saveName'
+        'click .edit-name': 'editName'
+        'click .save-name': 'saveName'
         'click .settings-btn': 'toggleSettings'
         'click .search-btn': 'addKeyword'
         'click .del': 'removeKeyword'
 
     initialize: =>
+        @editingName = false
         @$el.attr 'id', "stream-#{@model.id or @model.cid}"
         @render()
         @model.on 'change:keywords', @renderKeywords
+        @model.on 'change:name', @renderName
 
     render: =>
         @$el.html _.template Templates.stream, @model.toJSON()
@@ -227,6 +232,25 @@ class StreamView extends View
         @renderTweets()
         @renderKeywords()
 
+    renderName: =>
+        @editingName = false
+        @$('h1.name').html @model.get 'name'
+        @$('.save-name').css 'display', 'none'
+        
+    editName: =>
+        return if @editingName
+        @editingName = true  
+        tpl = (name) -> 
+            "<form class='edit-name-form'><input type='text' value='#{name}'/></span></form>"
+        @$('.name').html tpl(@model.get 'name')
+        @$('.edit-name').css 'display', 'none'
+        @$('.save-name').css 'display', 'inline-block'
+
+    saveName: (evt)=>
+        @model.save name: @$('.name input').val().trim()
+        @model.trigger 'change:name'
+        false
+             
     renderTweets: =>
         tweets = new Tweets @model.get 'tweets'
         tweetsView = new TweetsView
