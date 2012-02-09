@@ -51,7 +51,7 @@ setup "GET", apiUrl("/streams/mine"), (xhr) =>
 setup "GET", apiUrl("/streams/:id"), (xhr,id) =>
     json200 xhr, responses.stream(id)
 
-setup "POST", apiUrl("/streams/:id"), (xhr) =>
+setup "POST", apiUrl("/streams"), (xhr) =>
   json200 xhr, responses.streamCreate(xhr)
 , {
     name: "Evil estate agent house search"
