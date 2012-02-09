@@ -1,1 +1,1 @@
-background: coffee modules/processes/app/pull_push.coffee
+background: wibble modules/processes/app/pull_push.coffee
