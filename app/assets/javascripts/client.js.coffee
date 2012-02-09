@@ -33,6 +33,11 @@ camelize = transformKeys("camelize")
 
 underscore = transformKeys("underscore")
 
+
+getValue = (object, prop) ->
+  return null unless object && object[prop]
+  if _.isFunction(object[prop]) then object[prop]() else object[prop]
+
 Model::sync = Collection::sync = sync = (method,model,options = {}) ->
 
   type = methodMap[method]
@@ -42,7 +47,7 @@ Model::sync = Collection::sync = sync = (method,model,options = {}) ->
     dataType: "json"
   , options
 
-  params.url = getUrl(method,model,params) unless params.url
+  params.url = getValue(model,'url') unless params.url
   params.url += ".json"
 
   switch method
@@ -100,7 +105,7 @@ class Stream extends Model
       @keywordCollection.bind "add", @syncKeywords
       @keywordCollection.bind "remove", @syncKeywords
       @keywordCollection.reset (@get('keywords') || "").split(",").map (w) -> {word: w}
-    syncKeywords: ->
+    syncKeywords: =>
       @save {keywords: @keywordCollection.pluck("word").join(", ")}
     addKeyword: (keyword) ->
       return false if keyword is "" or @keywordCollection.get(keyword)
