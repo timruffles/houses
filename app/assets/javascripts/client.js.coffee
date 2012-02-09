@@ -79,6 +79,9 @@ class App extends Model
       @set streams:streams
       @set user:user
       user.login()
+    maxStreams: 4
+    canMakeStream: ->
+      @get('streams').length() < @maxStreams
 
 class Tweet extends Model
 class Tweets extends Collection
@@ -93,7 +96,7 @@ class Stream extends Model
           message = camelize message
           @add message.tweet
       @keywordCollection = new Collection
-        model: Model.extend idAttribute: "word"
+        model: Model.extend(idAttribute: "word")
       @keywordCollection.bind "add", @syncKeywords
       @keywordCollection.bind "remove", @syncKeywords
       @keywordCollection.reset (@get('keywords') || "").map (w) -> {word: w}
@@ -278,7 +281,10 @@ class AppView extends View
         "click #new-stream-btn": "newStream"
 
     newStream: =>
+      if @model.canMakeStream()
         @model.get('streams').create {name:'New Stream'}, {wait:true}
+      else
+        alert("Sorry, you can only create #{@model.maxStreams} streams")
 
 $ ->
   authenticityToken = $("[name=csrf-token]").attr("content")
