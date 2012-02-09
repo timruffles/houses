@@ -8,8 +8,7 @@
     <%= csrf_meta_tags %>
     <title>Feed the bird!</title>
 
-    <!-- Stylesheets -->
-    <%= stylesheet_link_tag "app" %>
+    <%= yield :stylesheets %>
   </head>
   <body>
       <%= yield %>

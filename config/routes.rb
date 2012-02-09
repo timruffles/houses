@@ -2,6 +2,7 @@ TwitterMlServer::Application.routes.draw do
   root :to => "main#index"
 
   match "/auth/:provider/callback" => "sessions#create"
+  match "/logout" => "sessions#destroy"
   resources :users, :only => [] do
     collection do
       get "me"

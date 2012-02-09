@@ -25,11 +25,11 @@ group :assets do
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
   # gem 'therubyracer'
 
+  gem 'compass-rails'
   gem 'uglifier', '>= 1.0.3'
 end
 
 gem 'jquery-rails'
-
 
 group :test do
   gem 'mocha', :require => false

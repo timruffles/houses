@@ -1,26 +1,44 @@
 <% unless current_user %>
+  <% content_for :stylesheets do %>
+    <!-- Stylesheets -->
+    <%= stylesheet_link_tag "splash" %>
+  <% end %>
   <section id="splash">
-
     <section id="headline">
       <h1>
          100% interesting tweets
       </h1>
+      <div>
+        <div class="bird gold"></div>
+      </div>
       <h2>
-        Create a feed of sales leads, customer enquireies, marketing opportunities, without noise.
+        Auto-magically create a feed of the tweets you need with our machine learning Twitter client.
       </h2>
     </section>
-    <section id="extra">
-      <h2>Get started</h2>
-      <a href="/auth/twitter">
-        <img src="https://si0.twimg.com/images/dev/buttons/sign-in-with-twitter-l.png" />
+    <section id="extra" class="container">
+      <a href="/auth/twitter" class="btn btn-primary btn-large">
+        <img src="<%= image_path "blue.png" %>" /> Get Started
       </a>
     </section>
   </section>
+  <div id="birds">
+    <% ['far','near','nearest'].each do |distance| %>
+      <div class="distance <%= distance %>">
+        <% 10.times do %>
+          <div class="bird grey-<%= distance %>" style="left: <%= (rand * 600).to_i %>px;top: <%= (rand * 50).to_i%>%"></div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
 <% else %>
   <% content_for :javascript do %>
     <div pub-key="<%= ENV['PN_PUB'] %>" sub-key="<%= ENV['PN_SUB'] %>" ssl="off" origin="pubsub.pubnub.com" id="pubnub"></div>
     <script src="http://cdn.pubnub.com/pubnub-3.1.min.js"></script>
     <%= javascript_include_tag "app" %>
+  <% end %>
+  <% content_for :stylesheets do %>
+    <!-- Stylesheets -->
+    <%= stylesheet_link_tag "app" %>
   <% end %>
   <!-- The Application -->
   <section id="app">
