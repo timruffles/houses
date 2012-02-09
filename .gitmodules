@@ -1,0 +1,3 @@
+[submodule "modules/processes"]
+	path = modules/processes
+	url = git@github.com:timruffles/twitter_ml_processes.git
