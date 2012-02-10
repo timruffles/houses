@@ -132,8 +132,8 @@ body{
         float:left;
         cursor:pointer;
         font-weight:700;
-        &:hover + .edit-name{
-        display:inline-block;
+        &:hover + .edit-name{ 
+             color:darken(@blue,10);
         }
         input[type=text]{
             height:25px;
@@ -143,12 +143,15 @@ body{
     }
     .edit-name {
         cursor:pointer;
-        display:none;
+        display:inline-block;
         margin-right:5px;
         margin-top:13px;
-        font-size:24px;
-        &:before { content: '\270e'; }
-        color:darken(@blue,10);
+        font-size:24px; 
+        color:lighten(@lgrey,10);
+        &:before { content: '\270e'; } 
+        &:hover {
+            color:darken(@blue,10);
+        }
     }
     .save-name {
         display:none;

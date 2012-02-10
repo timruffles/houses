@@ -254,9 +254,11 @@ class StreamView extends View
         @$('.name').html tpl(@model.get 'name')
         @$('.edit-name').css 'display', 'none'
         @$('.save-name').css 'display', 'inline-block'
+        @$('.name input').focus()
 
     saveName: (evt)=>
         @model.save name: @$('.name input').val().trim()
+        @$('.edit-name').css 'display', 'inline-block'
         @model.trigger 'change:name'
         false
              
