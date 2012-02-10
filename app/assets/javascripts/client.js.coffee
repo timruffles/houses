@@ -33,7 +33,6 @@ camelize = transformKeys("camelize")
 
 underscore = transformKeys("underscore")
 
-
 getValue = (object, prop) ->
   return null unless object && object[prop]
   if _.isFunction(object[prop]) then object[prop]() else object[prop]
@@ -72,8 +71,6 @@ Model::sync = Collection::sync = sync = (method,model,options = {}) ->
   params.processData = false if params.type isnt "GET" and not Backbone.emulateJSON
   $.ajax params
 
-
-
 class App extends Model
     initialize: ->
       streams = new Streams()
@@ -94,12 +91,26 @@ class Tweets extends Collection
     url: "/tweets"
 
 class Stream extends Model
-    initialize: ->
+    initialize: =>
+        
+        @tweetsCollection = new Tweets @get 'tweets'
+        
+        # Testing code (to be removed) 
+        ###
+        if @id is 123
+            window.setInterval( =>
+                window.push_tweet.id = "#{parseInt(Math.random()*100)}" 
+                @tweetsCollection.add camelize window.push_tweet
+            , 
+                5000
+            )
+        ###
         PUBNUB?.subscribe
             channel: "search:#{@id}:tweets:add"
             callback: (message) =>
                 message = camelize message
-                @add message.tweet
+                @tweetsCollection.add message.tweet
+        
         
         @keywordCollection = new (Collection.extend
             model: Model.extend(idAttribute: "word")
@@ -143,17 +154,17 @@ class TweetsView extends View
 
     initialize: =>
         @collection.bind 'add', @renderTweet
+        @render()
 
     render: =>
         if @collection.models.length > 0 then @$el.html ""
         @collection.each @renderTweet
 
     renderTweet: (tweet) =>
-        tweetView = new TweetView
+        new TweetView
             model: tweet
             parentId:@options.parentId
             parentEl:@el
-        tweetView.render()
 
 class TweetView extends View
 
@@ -169,13 +180,15 @@ class TweetView extends View
         @model.on 'change:id', @render
         @model.on 'change:category', @renderCategory
         @$el.mouseenter(@showActions).mouseleave(@hideActions)
+        @render()
   
     render: =>
         @renderCategory() if @model.get 'category'              
         @$el.html _.template Templates.tweet, @model.toJSON() 
-        if $("##{@$el.attr 'id'}").length is 0
+        if $("##{@$el.attr 'id'}").length is 0 
             $(@options.parentEl).prepend @el
-        @$('.time-ago').timeago()
+            move(@el).scale(0).duration(100).then(=> move(@el).scale(1).end()).end()      
+            @$('.time-ago').timeago()
 
     renderCategory: =>
         cat = @model.get 'category'
@@ -210,8 +223,10 @@ class StreamsView extends View
         @collection.bind 'add', @renderStream
         @collection.bind 'reset', @render
         @render()
+
     render: =>
         @collection.each @renderStream
+
     renderStream: (stream) =>
         streamView = new StreamView {model: stream}
 
@@ -219,6 +234,7 @@ class StreamView extends View
 
     tagName: "article"
     className: "stream"
+
     events:
         'click .name': 'editName'
         'submit .edit-name-form': 'saveName'
@@ -231,15 +247,21 @@ class StreamView extends View
     initialize: =>
         @editingName = false
         @$el.attr 'id', "stream-#{@model.id or @model.cid}"
-        @render()
         @model.on 'change:keywords', @renderKeywords
         @model.on 'change:name', @renderName
+        @render()
 
     render: =>
         @$el.html _.template Templates.stream, @model.toJSON()
         $('#streams').append @el
         @renderTweets()
         @renderKeywords()
+
+    renderTweets: =>
+        new TweetsView
+            collection: @model.tweetsCollection
+            el:"#tweets-#{@model.id}"
+            parentId:@model.id
 
     renderName: =>
         @editingName = false
@@ -262,14 +284,6 @@ class StreamView extends View
         @model.trigger 'change:name'
         false
              
-    renderTweets: =>
-        tweets = new Tweets @model.get 'tweets'
-        tweetsView = new TweetsView
-            collection:tweets
-            el:"#tweets-#{@model.id}"
-            parentId:@model.id
-        tweetsView.render()
-
     renderKeywords: =>
         tpl = (keyword) ->
             "<span class='keyword'><span class='word'>#{keyword}</span>
