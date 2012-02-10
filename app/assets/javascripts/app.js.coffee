@@ -3,8 +3,10 @@
 //= require underscore.min
 //= require core_ext
 //= require backbone.min
+//= require move
 //= require tweets
 //= require tweet-parsers
 //= require templates
-
+#//= require sinon
+#//= require fake_server
 //= require client

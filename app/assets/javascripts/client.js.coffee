@@ -166,15 +166,24 @@ class TweetView extends View
 
     initialize: =>
         @$el.attr 'id', "tweet-#{@options.parentId}-#{@model.id}"
-        @model.on 'change', @render
+        @model.on 'change:id', @render
+        @model.on 'change:category', @renderCategory
         @$el.mouseenter(@showActions).mouseleave(@hideActions)
   
     render: =>
-        @$el.attr 'class', "#{@className} #{@model.get 'category'}"
+        @renderCategory() if @model.get 'category'              
         @$el.html _.template Templates.tweet, @model.toJSON() 
         if $("##{@$el.attr 'id'}").length is 0
             $(@options.parentEl).prepend @el
         @$('.time-ago').timeago()
+
+    renderCategory: =>
+        cat = @model.get 'category'
+        if cat is 'boring' and @model.hasChanged 'category' 
+            move(@el).scale(0).ease('snap').duration(350)
+            .end => @$el.attr 'class', "#{@className} #{cat}"
+        else
+            @$el.attr 'class', "#{@className} #{cat}"
 
     markAsRelevant: => 
         @changeState "interesting"
