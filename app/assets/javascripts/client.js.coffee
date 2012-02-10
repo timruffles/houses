@@ -110,7 +110,7 @@ class Stream extends Model
             callback: (message) =>
                 message = camelize message
                 @tweetsCollection.add message.tweet
-        
+
         
         @keywordCollection = new (Collection.extend
             model: Model.extend(idAttribute: "word")
@@ -189,7 +189,7 @@ class TweetView extends View
             $(@options.parentEl).prepend @el
             move(@el).scale(0).duration(100).then(=> move(@el).scale(1).end()).end()      
             @$('.time-ago').timeago()
-
+       
     renderCategory: =>
         cat = @model.get 'category'
         if cat is 'boring' and @model.hasChanged 'category' 
@@ -333,6 +333,10 @@ class AppView extends View
     initialize: =>
         new UserView model:@model.get 'user'
         new StreamsView collection:@model.get 'streams'
+        twttr.anywhere (T) -> 
+            T.hovercards()
+            T(".profile_image").hovercards username: (node) -> node.alt
+        
 
     events:
         "click #new-stream-btn": "newStream"

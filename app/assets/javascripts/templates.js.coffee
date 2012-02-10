@@ -16,12 +16,12 @@ window.Templates =
     </section>
   """
   tweet: """
-    <img class="profile_image" src="<%=user.profileImageUrl%>" />
+    <img class="profile_image" src="<%=user.profileImageUrl%>" alt="<%='@'+user.screenName%>"/>
     <p>
        <span class="username"><%=user.name%></span>
-        <span class="screenname"><%=('@'+user.screenName).parseUsername()%> 
+       <span class="screenname"><%='@'+user.screenName%></span>
     </p>
-    <span class="text"><%= text.parseURL().parseUsername().parseHashtag() %></span>
+    <span class="text"><%= text.parseURL().parseHashtag() %></span>
     <div class="time-ago" title="<%=createdAt%>"></div>
     <div class="actions" style="display:none"><span class="iconic yes"> Yes</span> | <span
     class="iconic no"> No</span></div>
