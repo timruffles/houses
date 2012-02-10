@@ -23,6 +23,6 @@ window.Templates =
     </p>
     <span class="text"><%= text.parseURL().parseUsername().parseHashtag() %></span>
     <div class="time-ago" title="<%=createdAt%>"></div>
-    <div class="actions" style="display:none"><span class="yes">Yes</span> | <span
-    class="no">no</span></div>
+    <div class="actions" style="display:none"><span class="iconic yes"> Yes</span> | <span
+    class="iconic no"> No</span></div>
   """

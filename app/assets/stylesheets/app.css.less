@@ -269,11 +269,22 @@ body{
         width: 48px;
         height: 48px;
     }
-    .yes, .no{
-        cursor:pointer;
-        &:hover{text-decoration:underline;}
+    .time-ago{
+        height:20px;
     }
-    .yes{ color:green; }
-    .no { color:red; }
+    .yes, .no{
+        height:18px;
+        cursor:pointer;
+        display:inline-block;
+        margin: 2px 4px 0px 0px;
+    }
+    .yes{ 
+        color:green;
+        &:before { content: '\2713'; }
+    }
+    .no { 
+        color:red;
+        &:before { content: '\2717'; }
+    }
 }
 
