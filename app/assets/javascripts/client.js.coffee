@@ -47,7 +47,12 @@ Model::sync = Collection::sync = sync = (method,model,options = {}) ->
   , options
 
   params.url = getValue(model,'url') unless params.url
-  params.url += ".json"
+  params.url += (switch method
+    when "update","delete"
+      model.id
+    else
+      ""
+  ) + ".json"
 
   switch method
     when "create","update","delete"
