@@ -47,12 +47,7 @@ Model::sync = Collection::sync = sync = (method,model,options = {}) ->
   , options
 
   params.url = getValue(model,'url') unless params.url
-  params.url += (switch method
-    when "update","delete"
-      "/" + model.id
-    else
-      ""
-  ) + ".json"
+  params.url += ".json"
 
   switch method
     when "create","update","delete"
@@ -96,8 +91,6 @@ class Tweets extends Collection
     url: "/tweets"
 
 class Stream extends Model
-
-    url: "/streams"
     initialize: =>
         
         @tweetsCollection = new Tweets @get 'tweets'
