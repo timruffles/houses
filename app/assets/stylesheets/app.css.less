@@ -176,9 +176,11 @@ body{
     .settings{
         position:absolute;
         top:51px;
-        padding:5px;
+        padding:10px;
+        width:310px;
         input[type=text]{
-            width:252px;
+            maring-left:8px;
+            width:242px;
             height:25px;
         }
         .search-btn{
@@ -201,9 +203,9 @@ body{
         }
         .keyword {
             display:inline-block;
-            background-color:@blue;
+            background-color:darken(@blue,10);
             color:@white;
-            border: solid 1px darken(@blue,10);
+            border: solid 1px darken(@blue,20);
             margin:5px 5px 5px 0;
             padding: 3px 6px;
             .border-radius(3px);
@@ -213,6 +215,27 @@ body{
                 &:hover{
                     text-decoration:underline;
                 }
+            }
+        }
+        .delete-zone{
+            margin: 10px 0;
+            border: solid 1px lighten(red,30);
+            background-color:lighten(red,35);
+            padding: 5px 0 5px 5px;
+            cursor:pointer;
+            color:darken(@dgrey,10);
+            &:hover{
+                background-color:lighten(red,30);
+                color:darken(@dgrey,40);
+            }
+            .border-radius(5px);
+
+        }
+        .delete-stream{
+            display:inline-block;
+            &:before { 
+                color: red;
+                content: '\2717'; 
             }
         }
     }

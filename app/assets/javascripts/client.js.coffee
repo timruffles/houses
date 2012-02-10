@@ -91,6 +91,8 @@ class Tweets extends Collection
     url: "/tweets"
 
 class Stream extends Model
+
+    url: "/streams"
     initialize: =>
         
         @tweetsCollection = new Tweets @get 'tweets'
@@ -108,10 +110,10 @@ class Stream extends Model
         PUBNUB?.subscribe
             channel: "search:#{@id}:tweets:add"
             callback: (message) =>
+                return if @tweetsCollection.get message.tweet.id
                 message = camelize message
                 @tweetsCollection.add message.tweet
-
-        
+ 
         @keywordCollection = new (Collection.extend
             model: Model.extend(idAttribute: "word")
         )
@@ -240,9 +242,12 @@ class StreamView extends View
         'submit .edit-name-form': 'saveName'
         'click .edit-name': 'editName'
         'click .save-name': 'saveName'
+        'click .delete-zone': 'deleteStream'
         'click .settings-btn': 'toggleSettings'
         'click .search-btn': 'addKeyword'
         'click .del': 'removeKeyword'
+
+    deleteStream: => @model.destroy() 
 
     initialize: =>
         @editingName = false

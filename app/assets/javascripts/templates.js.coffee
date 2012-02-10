@@ -9,6 +9,8 @@ window.Templates =
           <input class="search-input" type="text"/>
           <span class="search-btn">Search</span>
           <div class="keywords"></div>
+          <div class="delete-zone">
+          <span class="delete-stream iconic"></span> Delete this stream?</div>
       </section>
     </header> 
     <section id="tweets-<%=id%>" class="tweets">
