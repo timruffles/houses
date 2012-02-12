@@ -8,6 +8,11 @@ $blue: #00B4FF
 $white: #FFFFFF
 $lgrey: #EEEEEE
 
+@font-face
+  font-family: 'IconicFill'
+  src: url("iconic_fill.eot")
+  src: local('IconicFill'), url("iconic_fill.svg#iconic") format('svg'), url("iconic_fill.otf") format('opentype')
+
 // generic
 input[type=text]
   height: 2em
@@ -318,7 +323,12 @@ body
     float: right
 
 .loading
-  width: 100%
+  width: 25%
   text-align: center
-  font-size: 1em
+  font-size: 1.25em
+  margin: 0 auto
   margin-top: 15%
+  .progress
+    margin-top: 1em
+
+

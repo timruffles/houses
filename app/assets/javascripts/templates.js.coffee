@@ -28,11 +28,6 @@ window.Templates =
     <div class="actions" style="display:none"><span class="iconic yes"> Yes</span> | <span
     class="iconic no"> No</span></div>
   """
-  loading: """
-    <div class="loading">
-      Loading, carrier pidgeons have been dispatched...
-    </div>
-  """
   addStream: addStream = """
     <form class="create-stream">
       <input type="text" class="keywords" />

@@ -81,6 +81,7 @@ class App extends Model
         streams.fetch
           success: =>
             @set loaded: true
+          add: true
 
       @set streams:streams
       @set user:user
@@ -240,18 +241,9 @@ class StreamsView extends View
 
     initialize: ({@user,@app}) =>
         @collection.bind 'add', @renderStream
-        @collection.bind 'reset', @render
         @collection.bind "add remove reset", @renderControl
-        @app.bind "change:loaded", @render
-        @render()
-
-    render: =>
-        @$el.html ""
-        if @app.get("loaded")
-          @collection.each @renderStream
-          @renderControl()
-        else
-          @$el.append Templates.loading
+        @app.bind "change:loaded", =>
+          @$(".loading").remove()
 
     renderControl: =>
         @controlEl?.remove()
