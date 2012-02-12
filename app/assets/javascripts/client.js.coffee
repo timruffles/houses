@@ -229,6 +229,7 @@ class StreamsView extends View
 
     renderStream: (stream) =>
         streamView = new StreamView {model: stream}
+        @el.append streamView.el
 
 class StreamView extends View
 
@@ -256,7 +257,6 @@ class StreamView extends View
 
     render: =>
         @$el.html _.template Templates.stream, @model.toJSON()
-        $('#streams').append @el
         @renderTweets()
         @renderKeywords()
 
