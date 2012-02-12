@@ -376,7 +376,8 @@ class AppView extends View
           user: @model.get 'user'
           app: @model
         twttr.anywhere (T) ->
-            T.hovercards()
+            T.hovercards("#streams")
+            T.linkifyUsers("#streams")
             T(".profile_image").hovercards username: (node) -> node.alt
 
 $ ->
