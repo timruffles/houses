@@ -238,6 +238,7 @@ class StreamsView extends View
 
     events:
       "submit .create-stream": "createStream"
+      "click .next": "tutorialNext"
 
     initialize: ({@user,@app}) =>
         @collection.bind 'add', @renderStream
@@ -258,6 +259,9 @@ class StreamsView extends View
         stream.on "destroy", ->
           streamView.$el.remove()
         @$el.append streamView.el
+
+    tutorialNext: ->
+      @user.set tutorialState: (@user.get("tutorialState") || 0) + 1
 
     createStream: =>
       if @app.canMakeStream()
