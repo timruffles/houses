@@ -52,7 +52,7 @@ body
   position: relative
   height: 39px
   border-bottom: 1px solid darken($dgrey,30)
-  // FIXME add gradient
+  +background-image(linear-gradient(color-stops(#555,#222)))
   .toolbar-inner
     padding: 10px 10px 10px 10px
     h2
@@ -305,8 +305,9 @@ body
   line-height: 1em
 
 .control
+  border: 1px solid #D4D4D4
   .content
-    margin-top: 2em
+    margin-top: 45%
     font-size: 1.5em
     padding: 1em
 
@@ -315,3 +316,9 @@ body
     width: 100%
   button
     float: right
+
+.loading
+  width: 100%
+  text-align: center
+  font-size: 1em
+  margin-top: 15%

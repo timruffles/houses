@@ -77,12 +77,22 @@ class App extends Model
     initialize: ->
       streams = new Streams()
       user = new User
-      user.on "login", ->
-        streams.fetch()
+      user.on "login", =>
+        streams.fetch
+          success: =>
+            @set loaded: true
 
       @set streams:streams
       @set user:user
       user.login()
+
+      tutorialState = user.get("tutorialState") || 0
+      if tutorialState == 0
+        streams.on "add", ->
+          user.set tutorialState: 1
+      if tutorialState < 1
+        streams.on "change:state", ->
+          user.set tutorialState: 2
     maxStreams: 3
     canMakeStream: ->
       @get('streams').length < @maxStreams
@@ -232,11 +242,16 @@ class StreamsView extends View
         @collection.bind 'add', @renderStream
         @collection.bind 'reset', @render
         @collection.bind "add remove reset", @renderControl
+        @app.bind "change:loaded", @render
         @render()
 
     render: =>
-        @collection.each @renderStream
-        @renderControl()
+        @$el.html ""
+        if @app.get("loaded")
+          @collection.each @renderStream
+          @renderControl()
+        else
+          @$el.append Templates.loading
 
     renderControl: =>
         @controlEl?.remove()
