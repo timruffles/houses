@@ -244,6 +244,8 @@ class StreamsView extends View
         @collection.bind "add remove reset", @renderControl
         @app.bind "change:loaded", =>
           @$(".loading").remove()
+          @renderControl()
+        @user.bind "change:tutorialState", @renderControl
 
     renderControl: =>
         @controlEl?.remove()
@@ -376,10 +378,6 @@ class AppView extends View
         twttr.anywhere (T) ->
             T.hovercards()
             T(".profile_image").hovercards username: (node) -> node.alt
-        
-
-    events:
-        "click #new-stream-btn": "newStream"
 
 $ ->
   authenticityToken = $("[name=csrf-token]").attr("content")
