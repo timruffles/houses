@@ -12,11 +12,9 @@ $lgrey: #EEEEEE
   src: url("iconic_fill.eot")
   src: local('IconicFill'), url("iconic_fill.svg#iconic") format('svg'), url("iconic_fill.otf") format('opentype')
 
-
 ::-webkit-scrollbar
   width: 8px
   height: 8px
-
 
 ::-webkit-scrollbar-thumb:vertical
   height: 30px
@@ -28,11 +26,8 @@ $lgrey: #EEEEEE
   border: 1px solid lighten($dgrey,20)
   background: lighten($dgrey,30)
 
-
 ::-webkit-scrollbar-track-piece
   background-color: $white
-
-
 
 html, body
   height: 100%
@@ -83,8 +78,6 @@ body
       color: $lgrey
       font-size: 18
 
-
-
 #container
   position: absolute
   top: 39px
@@ -107,7 +100,6 @@ body
   margin: 3px
   height: 100%
   width: 332px
-
 
 .stream-header
   $radius: 5px
@@ -137,7 +129,6 @@ body
       font-size: 18px
       color: darken($blue,10)
 
-
   .edit-name
     cursor: pointer
     display: inline-block
@@ -150,7 +141,6 @@ body
     &:hover
       color: darken($blue,10)
 
-
   .save-name
     display: none
     cursor: pointer
@@ -160,7 +150,6 @@ body
     &:before
       content: '\e008'
     color: darken($blue,10)
-
 
   .settings-btn
     color: darken($lgrey,10)
@@ -217,8 +206,6 @@ body
         &:hover
           text-decoration: underline
 
-
-
     .delete-zone
       margin: 10px 0
       border: solid 1px lighten(red,30)
@@ -232,16 +219,11 @@ body
 
       +border-radius(5px)
 
-
     .delete-stream
       display: inline-block
       &:before
         color: red
         content: '\2717' 
-
-
-
-
 
 .tweets
   width: 320px
@@ -255,7 +237,6 @@ body
   bottom: 0
   word-wrap: break-word
 
-
 .tweet
   padding: 5px 5px 5px 62px
   position: relative
@@ -263,7 +244,7 @@ body
   line-height: 16px
   color: $dgrey
   border-bottom: solid 1px $lgrey
-  
+
   &.interesting .text, .interesting.text a
     color: green
   &.boring
@@ -275,7 +256,6 @@ body
     &:hover
       text-decoration: underline
 
-  
   .username
     font-size: 14px
     color: darken($dgrey,10)
@@ -290,7 +270,6 @@ body
 
     color: lighten($dgrey,20)
 
-  
   .profile_image
     position: absolute
     top: 5px
@@ -316,8 +295,6 @@ body
     color: red
     &:before
       content: '\2717'
-
-
 
 .tutorial
   font-family: 'Handlee', cursive
