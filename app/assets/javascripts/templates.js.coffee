@@ -28,3 +28,33 @@ window.Templates =
     <div class="actions" style="display:none"><span class="iconic yes"> Yes</span> | <span
     class="iconic no"> No</span></div>
   """
+  addStream: addStream = """
+    <form class="create-stream">
+      <input type="text" class="keywords" />
+      <button class="btn large">Create Stream</button>
+    </form>
+  """
+  tutorials:
+    0: """
+      <p class="tutorial">
+        Enter words you're interested in and click 'create stream'.
+      </p>
+      #{addStream}
+    """
+    1: """
+      <p class="tutorial">
+        Teach the bird which tweets are interesting you by hovering over them and clicking "Yes" or "No".
+      </p>
+      #{addStream}
+    """
+    2: """
+      <p class"tutorial">
+        Thanks for using Teach the Bird! If you find us useful, it'd help us so much if you told your followers!
+      </p>
+      <p class="tutorial">
+        Made with love by @pcole and @timruffles :)
+      </a>
+    """
+    3: addStream
+
+
