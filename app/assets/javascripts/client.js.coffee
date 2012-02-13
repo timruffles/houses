@@ -116,6 +116,7 @@ class Stream extends Model
             model: Model.extend(idAttribute: "word")
         )
         @keywordCollection.on "add", @syncKeywords
+        @keywordCollection.on "remove", @syncKeywords
         @keywordCollection.reset (@get('keywords') || "")
                 .split(",")
                 .map((w) -> w.trim())
@@ -133,13 +134,15 @@ class Stream extends Model
             return false
         words = if typeof word is 'object' then word else [word]
         keywords = []
-        _.each words, (word) => 
+        _.each words, (word) =>
             (keywords.push word:word) if not @keywordCollection.get word
-        @keywordCollection.add keywords
+        if not keywords.length 
+            return false
+        @keywordCollection.add keywords  
         true
 
-    removeKeyword: (keyword) =>
-        @keywordCollection.remove(keyword)
+    removeKeyword: (word) =>
+        @keywordCollection.remove(word)
 
 class Streams extends Collection
     model: Stream
@@ -198,7 +201,9 @@ class TweetView extends View
         @$el.html _.template Templates.tweet, @model.toJSON() 
         if $("##{@$el.attr 'id'}").length is 0 
             $(@options.parentEl).prepend @el
-            move(@el).scale(0).duration(100).then(=> move(@el).scale(1).end()).end()      
+            h = @$el.height() 
+            @$el.css('top',"-#{h}px")
+            @$el.animate {top:"0"} 
             @$('.time-ago').timeago()
        
     renderCategory: =>
@@ -274,6 +279,7 @@ class StreamView extends View
             title = "Add keywords here..."
             @$el.addClass "no-keywords"
         else
+            @$el.removeClass "no-keywords"
             title = keywords.join(', ')
             if title.legnth > 12 then title = title.slice(0,11) + '...'
         @$('.stream-title').html title
@@ -290,11 +296,14 @@ class StreamView extends View
         @$('.add-keyword-form input').focus()
 
     addKeyword: (evt) =>
-        @model.addKeyword @$('.add-keyword-form input').val().trim().split(',')
+        $input = @$('.add-keyword-form input')
+        if @model.addKeyword $input.val().trim().split(',')
+            $input.val('')
         false
 
     removeKeyword: (evt) ->
         word = $(evt.currentTarget).parent().find('.word').html().trim()
+        console.log word
         @model.removeKeyword(word)
              
     toggleSettings: =>
