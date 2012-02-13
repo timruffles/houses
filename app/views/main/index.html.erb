@@ -39,16 +39,24 @@
   <% content_for :stylesheets do %>
     <!-- Stylesheets -->
     <%= stylesheet_link_tag "app" %>
+    <link href='http://fonts.googleapis.com/css?family=Handlee' rel='stylesheet' type='text/css' />
   <% end %>
   <!-- The Application -->
   <section id="app">
     <header id="toolbar"><div class="toolbar-inner">
       <h2>Teach the Bird</h2>
-      <span class="button" id="new-stream-btn">New Stream</span>
       <span class="user-name"></span>
     </header>
     <div id="container">
         <section id="streams">
+            <div class="loading">
+              Loading, carrier pidgeons have been dispatched...
+              <div class="progress progress-info
+                   progress-striped active">
+                <div class="bar"
+                     style="width: 100%;"></div>
+              </div>
+            </div>
         </section>
     </div>
   </section>

@@ -1,8 +1,13 @@
 //= require bootstrap
 @import "compass/css3/gradient"
+html
+  height: 100%
 body
   +linear-gradient(color-stops(#f0f9ff 0%,#cbebff 47%,#a1dbff 100%))
+  background-attachment: fixed
+  overflow: hidden
   height: 100%
+  
 #headline
   text-align: center
   margin-top: 2em
@@ -62,7 +67,7 @@ body
     -webkit-transform: translate(-140%,0)
   .distance
     position: absolute
-    top: 20%
+    top: 10%
     width: 100%
     height: 600px
     overflow: hidden

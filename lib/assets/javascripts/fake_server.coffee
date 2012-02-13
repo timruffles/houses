@@ -51,6 +51,9 @@ setup "GET", apiUrl("/streams/mine"), (xhr) =>
 setup "GET", apiUrl("/streams/:id"), (xhr,id) =>
     json200 xhr, responses.stream(id)
 
+setup "DELETE", apiUrl("/streams"), (xhr) =>
+    json200 xhr, postBody xhr
+
 setup "POST", apiUrl("/streams"), (xhr) =>
   json200 xhr, responses.streamCreate(xhr)
 , {
@@ -71,16 +74,13 @@ setup "PUT", apiUrl("/tweets/:id"), (xhr) =>
   done: true
   state: "relevent"
 }
-###
-examples.forEach ([method,url,handler,exampleData]) ->
-  url = url.toString().replace("/^","").replace("(\\w+)","areafprogksrigjosijfoisjr").replace(/\/$/,"")
-  $.ajax 
-    url: url
-    data: if exampleData then JSON.stringify(exampleData) else null
-    dataType: "json"
-    contentType: 'application/json'
-    type: method
-    success: (resp) ->
-      console.log "#{method} to #{url}, response:", resp
-###
 
+window.push_tweet = 
+    "created_at": "Tue Nov 29 14:24:07 +0000 2011"
+    "id": "141522834898960384"
+    "text": "#MomentsICanNeverForget gathering Hunt's at my house, karaoke, cupcakes and everything nice :D"
+    "user": 
+        "screen_name": 'Jung'
+        "name": "junhyung's joker \342\235\244"
+        "profile_background_tile": true
+        "profile_image_url": "http://a0.twimg.com/profile_images/1612230687/likeeyyy_normal.jpg"

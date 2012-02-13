@@ -8,8 +8,7 @@ development:
   database: tim
   username: tim
   password: pass
-
-
+  
 test:
   adapter: postgresql
   database: test

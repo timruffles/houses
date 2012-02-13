@@ -7,6 +7,7 @@ class Ability
     alias_action :me, :to => :see_myself
     can(:create, Search) { !user.new_record? }
     can [:see_my_own,:read,:update,:destroy], Search, :user_id => user.id
+    can([:create], ClassifiedTweet) { !user.new_record }
     can [:update], ClassifiedTweet, :user_id => user.id
     can [:see_myself], User
   end

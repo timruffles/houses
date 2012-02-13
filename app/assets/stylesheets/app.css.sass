@@ -1,0 +1,338 @@
+//= require reset
+//= require iconic_fill
+@import bootstrap
+@import compass/css3/images
+
+$dgrey: #515151
+$blue: #00B4FF
+$white: #FFFFFF
+$lgrey: #EEEEEE
+
+@font-face
+  font-family: 'IconicFill'
+  src: url("iconic_fill.eot")
+  src: local('IconicFill'), url("iconic_fill.svg#iconic") format('svg'), url("iconic_fill.otf") format('opentype')
+
+// generic
+input[type=text]
+  height: 2em
+
+body
+  font-family: "Helevtica Neue", sans-serif
+
+::-webkit-scrollbar
+  width: 8px
+  height: 8px
+
+::-webkit-scrollbar-thumb:vertical
+  height: 30px
+  border: 1px solid lighten($dgrey,20%)
+  background: lighten($dgrey,30%)
+
+::-webkit-scrollbar-thumb:horizontal
+  width: 50px
+  border: 1px solid lighten($dgrey,20%)
+  background: lighten($dgrey,30%)
+
+::-webkit-scrollbar-track-piece
+  background-color: $white
+
+html, body
+  height: 100%
+
+body
+  overflow-x: auto
+  overflow-y: hidden
+  height: 100%
+  width: 100%
+  background-color: $lgrey
+  position: absolute
+  font-size: 14px
+  color: darken($dgrey,10%)
+
+#toolbar
+  width: 100%
+  min-width: 1024px
+  z-index: 1
+  position: relative
+  height: 39px
+  border-bottom: 1px solid darken($dgrey,30%)
+  +background-image(linear-gradient(color-stops(#555,#222)))
+  .toolbar-inner
+    padding: 10px 10px 10px 10px
+    h2
+      color: $lgrey
+      font-size: 24
+      display: inline-block
+      float: left
+
+    .button
+      position: relative
+      cursor: pointer
+      background-color: lighten($dgrey,2%)
+      &:hover
+        background-color: lighten($dgrey,5%)
+      &:active
+        top: 1px
+      padding: 5px
+      margin-left: 20px
+      color: $lgrey
+      +border-radius(5px)
+      border: solid 1px lighten($dgrey,10%)
+
+    .user-name
+      display: inline-block
+      float: right
+      color: $lgrey
+      font-size: 18
+
+#container
+  position: absolute
+  top: 39px
+  left: 0
+  right: 0
+  bottom: 0
+  overflow: hidden
+  min-width: 1024px
+
+#streams
+  position: absolute
+  top: 5px
+  bottom: 12px
+  left: 4px
+  right: 0px
+
+.stream, .control
+  position: relative
+  float: left
+  margin: 3px
+  height: 100%
+  width: 332px
+
+.stream
+  position: relative
+  float: left
+  margin: 3px
+  height: 100%
+  width: 332px
+  &.closed .stream-header
+    cursor: pointer
+    &:hover
+      .toggle-settings
+        color: darken($blue,10%)
+  &.open .stream-header
+    cursor: default
+  &.no-keywords
+    .stream-title
+      color: $lgrey
+    &:hover .stream-title 
+      color: darken($lgrey,10%)
+
+.stream-header
+  $radius: 5px
+  -moz-border-top-left-radius: $radius
+  border-top-left-radius: $radius
+  -moz-border-top-right-radius: $radius
+  border-top-right-radius: $radius
+  background-color: $white
+  color: darken($blue,10%)
+  border: 1px solid darken($lgrey,10%)
+  position: relative
+  height: 44px
+
+  .stream-title
+    display: inline-block
+    margin: 10px 5px 5px 10px
+    width: 280px
+    overflow: hidden
+    padding: 10px
+    font-size: 22px
+    float: left
+    cursor: pointer
+    font-weight: 700
+    &.edit-name:hover
+      color: darken($blue,10%)
+
+    input[type=text]
+      height: 25px
+      width: 245px
+      font-size: 16px
+      padding: 3px
+      color: darken($blue,10%)
+      float: left
+
+    .add-keyword 
+      cursor: pointer
+      margin: 3px 0px 0px 7px
+      font-size: 24px
+      &:before
+        content: '\e008'
+      color: darken($blue,10%)
+      float: left     
+
+    .toggle-settings
+      color: darken($lgrey,10%)
+      margin-right: 5px
+      margin-top: 13px
+      float: right
+      cursor: pointer
+      font-size: 24px
+      &:before
+        content: '\2699'
+      &:hover
+        color: darken($blue,10%)
+    
+    .settings
+      display: none
+      position: absolute
+      top: 51px
+      padding: 0px 10px 10px 10px
+      width: 310px
+      input[type=text]
+        maring-left: 8px
+        width: 242px
+        height: 25px
+      
+      .search-btn
+        display: inline-block
+        cursor: pointer
+        background-color: lighten($lgrey,2%)
+        &:hover
+          background-color: lighten($lgrey,5%)
+        &:active
+          top: 1px
+        margin-left: 3px
+        padding: 2px
+        color: $dgrey
+        +border-radius(5px)
+        border: solid 1px lighten($lgrey,10%)
+      
+      .keywords
+        width: 310px
+        padding-bottom: 10px
+        border-bottom: solid 1px $lgrey
+        margin-bottom: 10px
+      
+      .keyword 
+        display: inline-block
+        background-color: darken($blue,10%)
+        color: $white
+        border: solid 1px darken($blue,20%)
+        margin: 0px 5px 5px 0
+        padding: 3px 6px
+        +border-radius(3px)
+        .remove-keyword 
+          display: inline-block
+          color: $white
+          cursor: pointer
+          &:before 
+            font-size: 10px
+            content: '\2717'
+      .remove-stream
+        color: $dgrey
+        display: inline-block
+        cursor: pointer
+        &:hover
+          color: black
+        &:before 
+          color: red
+          content: '\2717'
+        
+.tweets
+  width: 320px
+  padding: 5px
+  background-color: $white
+  border: 1px solid darken($lgrey,10%)
+  overflow-y: scroll
+  overflow-x: hidden
+  position: absolute
+  top: 51px
+  bottom: 0
+  word-wrap: break-word
+
+.tweet
+  padding: 5px 5px 5px 62px
+  position: relative
+  font-size: 12px
+  line-height: 16px
+  color: $dgrey
+  border-bottom: solid 1px $lgrey
+
+  &.interesting .text, .interesting.text a
+    color: green
+  &.boring
+    display: none
+
+  a
+    color: darken($blue,20%)
+    text-decoration: none
+    &:hover
+      text-decoration: underline
+
+  .username
+    font-size: 14px
+    color: darken($dgrey,10%)
+    font-weight: 600 
+
+  .screenname
+    a
+      color: $dgrey
+      text-decoration: none
+      &:hover
+        text-decoration: underline
+
+    color: lighten($dgrey,20%)
+
+  .profile_image
+    position: absolute
+    top: 5px
+    left: 5px
+    width: 48px
+    height: 48px
+
+  .time-ago
+    height: 20px
+
+  .yes, .no
+    height: 18px
+    cursor: pointer
+    display: inline-block
+    margin: 2px 4px 0px 0px
+
+  .yes
+    color: green
+    &:before
+      content: '\2713'
+
+  .no
+    color: red
+    &:before
+      content: '\2717'
+
+.tutorial
+  font-family: 'Handlee', cursive
+  font-size: 1em
+  line-height: 1em
+
+.control
+  border: 1px solid #D4D4D4
+  .content
+    margin-top: 45%
+    font-size: 1.5em
+    padding: 1em
+
+.create-stream
+  input
+    width: 100%
+  button
+    float: right
+
+.loading
+  width: 25%
+  text-align: center
+  font-size: 1.25em
+  margin: 0 auto
+  margin-top: 15%
+  .progress
+    margin-top: 1em
+

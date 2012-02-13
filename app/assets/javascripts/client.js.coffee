@@ -1,6 +1,8 @@
 # TODO use twitter anywhere to add hovercard, webintents. Web intents can make replying etc look v nice
 {Model,View,Collection,Router,Events} = Backbone
 
+MAX_STREAMS = 3
+
 window.authorised = (user) ->
   window.app.get("user").loginAs(user)
 
@@ -75,12 +77,23 @@ class App extends Model
     initialize: ->
       streams = new Streams()
       user = new User
-      user.on "login", ->
-        streams.fetch()
+      user.on "login", =>
+        streams.fetch
+          success: =>
+            @set loaded: true
+          add: true
 
       @set streams:streams
       @set user:user
       user.login()
+
+      tutorialState = user.get("tutorialState") || 0
+      if tutorialState == 0
+        streams.on "add", ->
+          user.set tutorialState: 1
+      if tutorialState < 1
+        streams.on "change:state", ->
+          user.set tutorialState: 2
     maxStreams: 3
     canMakeStream: ->
       @get('streams').length < @maxStreams
@@ -91,14 +104,12 @@ class Tweets extends Collection
     url: "/tweets"
 
 class Stream extends Model
-
-    url: "/streams"
     initialize: =>
         
         @tweetsCollection = new Tweets @get 'tweets'
         
         # Testing code (to be removed) 
-        
+        ### 
         if @id is 123 then window.setInterval( =>
                 window.push_tweet.id = "#{parseInt(Math.random()*100)}" 
                 @tweetsCollection.add camelize window.push_tweet
@@ -110,7 +121,6 @@ class Stream extends Model
             callback: (message) =>
                 message = camelize message
                 @tweetsCollection.add message.tweet
-        ###
         
         @keywordCollection = new (Collection.extend
             model: Model.extend(idAttribute: "word")
@@ -151,6 +161,10 @@ class Streams extends Collection
       opts.url = "/streams/mine"
       Collection::fetch.call this, opts
 
+TUTORIAL_CREATE = 0
+TUTORIAL_CLASSIFY = 1
+TUTORIAL_SHARE = 2
+TUTORIAL_FINISHED = 3
 class User extends Model
     url: "/users"
     login: (opts = {}) ->
@@ -235,16 +249,39 @@ class StreamsView extends View
 
     el: "#streams"
 
-    initialize: =>
-        @collection.bind 'add', @renderStream
-        @collection.bind 'reset', @render
-        @render()
+    events:
+      "submit .create-stream": "createStream"
+      "click .next": "tutorialNext"
 
-    render: =>
-        @collection.each @renderStream
+    initialize: ({@user,@app}) =>
+        @collection.bind 'add', @renderStream
+        @collection.bind "add remove reset", @renderControl
+        @app.bind "change:loaded", =>
+          @$(".loading").remove()
+          @renderControl()
+        @user.bind "change:tutorialState", @renderControl
+
+    renderControl: =>
+        @controlEl?.remove()
+        if @collection.length < MAX_STREAMS
+          @controlEl = $("<div class='control'><div class='content'>#{Templates.tutorials[@user.get("tutorialState") || 0]}</div></div>")
+          @$el.append @controlEl
 
     renderStream: (stream) =>
         streamView = new StreamView {model: stream}
+        stream.on "destroy", ->
+          streamView.$el.remove()
+        @$el.append streamView.el
+
+    tutorialNext: ->
+      @user.set tutorialState: (@user.get("tutorialState") || 0) + 1
+
+    createStream: =>
+      if @app.canMakeStream()
+        @app.get('streams').create {name:'New Stream'}, {wait:true}
+      else
+        alert("Sorry, you can only create #{@app.maxStreams} streams")
+      false
 
 class StreamView extends View
 
@@ -263,9 +300,6 @@ class StreamView extends View
         @settingsOpen = false
         @$el.addClass "closed"
         @$el.attr 'id', "stream-#{@model.id}"
-        @model.on 'change:keywords', @renderKeywords
-        @render()
-
     render: =>
         @$el.html _.template Templates.stream, @model.toJSON()
         $('#streams').append @el
@@ -356,20 +390,14 @@ class AppView extends View
 
     initialize: =>
         new UserView model:@model.get 'user'
-        new StreamsView collection:@model.get 'streams'
-        twttr.anywhere (T) -> 
-            T.hovercards()
+        new StreamsView
+          collection:@model.get 'streams'
+          user: @model.get 'user'
+          app: @model
+        twttr.anywhere (T) ->
+            T.hovercards("#streams")
+            T.linkifyUsers("#streams")
             T(".profile_image").hovercards username: (node) -> node.alt
-        
-
-    events:
-        "click #new-stream-btn": "newStream"
-
-    newStream: =>
-      if @model.canMakeStream()
-        @model.get('streams').create {name:'New Stream'}, {wait:true}
-      else
-        alert("Sorry, you can only create #{@model.maxStreams} streams")
 
 $ ->
   authenticityToken = $("[name=csrf-token]").attr("content")
