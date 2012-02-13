@@ -5,9 +5,9 @@ window.Templates =
         <span class="toggle-settings iconic"></span>
         <section class="settings">
             <section class="keywords"></section>
-            <section class="danger-zone">
-                <span class="remove-stream iconic"></span> Delete this stream
-            </section>
+            <div>
+            <span class="remove-stream iconic"> Delete this stream</span>            
+            </div>
       </section>
     </header> 
     <section id="tweets-<%=id%>" class="tweets">
