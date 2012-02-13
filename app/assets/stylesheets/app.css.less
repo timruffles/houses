@@ -104,12 +104,26 @@ body{
     left: 4px;
     right: 0px;
 }
-.stream {
+
+.stream{
     position: relative;
     float: left;
     margin: 3px;
     height: 100%;
     width: 332px;
+    &.closed .stream-header{
+        cursor: pointer;
+        &:hover{ 
+            .toggle-settings{ color:darken(@blue,10); }
+        }
+    }
+    &.open .stream-header{
+        cursor: default;
+    }
+    &.no-keywords{
+        .stream-title{ color:@lgrey; }
+        &:hover .stream-title{ color:darken(@lgrey,10); }
+    }
 }
 
 .stream-header {
@@ -123,47 +137,37 @@ body{
     border: 1px solid darken(@lgrey,10);
     position: relative;
     height: 44px;
-    cursor: default;
-
-    h1{
+ 
+    .stream-title{
         display:inline-block;
-        padding:10px;
-        font-size:24px;
+        margin: 10px 5px 5px 10px;
+        width: 280px;
+        overflow:hidden;
+        font-size:22px;
         float:left;
         cursor:pointer;
         font-weight:700;
-        &:hover + .edit-name{ 
-             color:darken(@blue,10);
-        }
+    
         input[type=text]{
             height:25px;
-            font-size:18px;
+            width: 245px;
+            font-size:16px;
+            padding:3px;
             color:darken(@blue,10);
+            float:left;
         }
-    }
-    .edit-name {
-        cursor:pointer;
-        display:inline-block;
-        margin-right:5px;
-        margin-top:13px;
-        font-size:24px; 
-        color:lighten(@lgrey,10);
-        &:before { content: '\270e'; } 
-        &:hover {
-            color:darken(@blue,10);
-        }
-    }
-    .save-name {
-        display:none;
-        cursor:pointer;
-        margin-right:5px;
-        margin-top:13px;
-        font-size:24px;
-        &:before { content: '\e008'; }
-        color:darken(@blue,10);
-    }
 
-    .settings-btn{
+        .add-keyword { 
+            cursor:pointer;
+            margin:3px 0px 0px 7px;
+            font-size:24px;
+            &:before { content: '\e008'; }
+            color:darken(@blue,10);
+            float:left;
+        }
+    } 
+    
+    .toggle-settings{
         color:darken(@lgrey,10);
         margin-right:5px;
         margin-top:13px;
@@ -174,9 +178,10 @@ body{
         &:hover { color:darken(@blue,10);}
     }
     .settings{
+        display:none;
         position:absolute;
         top:51px;
-        padding:10px;
+        padding:0px 10px 10px 10px;
         width:310px;
         input[type=text]{
             maring-left:8px;
@@ -198,22 +203,24 @@ body{
             border: solid 1px lighten(@dgrey,10);
         }
         .keywords{
-            margin-top:10px;
-            width:320px;
+            width:310px;
+            margin-bottom:20px;
         }
         .keyword {
             display:inline-block;
             background-color:darken(@blue,10);
             color:@white;
             border: solid 1px darken(@blue,20);
-            margin:5px 5px 5px 0;
+            margin:0px 5px 5px 0;
             padding: 3px 6px;
             .border-radius(3px);
-            .del {
+            .remove-keyword {
+                display:inline-block;
                 color:@white;
                 cursor:pointer;
-                &:hover{
-                    text-decoration:underline;
+                &:before {
+                    font-size:10px;
+                    content: '\2717'; 
                 }
             }
         }

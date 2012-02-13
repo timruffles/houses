@@ -1,21 +1,30 @@
 window.Templates =
   stream: """
-    <header class="stream-header"> 
-      <h1 class="name"><%= name %></span></h1>
-      <span class="iconic edit-name"></span>
-      <span class="iconic save-name"></span>
-      <span class="settings-btn iconic"> </span>
-      <section class="settings" style="display:none">
-          <input class="search-input" type="text"/>
-          <span class="search-btn">Search</span>
-          <div class="keywords"></div>
-          <div class="delete-zone">
-          <span class="delete-stream iconic"></span> Delete this stream?</div>
+    <header class="stream-header">
+        <h1 class="stream-title"></h1>
+        <span class="toggle-settings iconic"></span>
+        <section class="settings">
+            <section class="keywords"></section>
+            <section class="danger-zone">
+                <span class="remove-stream iconic"></span> Delete this stream
+            </section>
       </section>
     </header> 
     <section id="tweets-<%=id%>" class="tweets">
-      <h2>No tweets yet, add some keywords...</h2>
+        <span class="help">
+        Add some kewords to start getting tweets!
+        </span>
     </section>
+  """
+  keywords:"""
+    <span class='keyword'>
+        <span class='word'><%=word%></span>
+        <span class='remove-keyword iconic'></span>
+    </span>
+  """
+  editKeywords:"""
+    <form class='add-keyword-form'><input type='text'/></form>
+    <span class='add-keyword iconic'></span>
   """
   tweet: """
     <img class="profile_image" src="<%=user.profileImageUrl%>" alt="<%='@'+user.screenName%>"/>

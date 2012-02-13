@@ -98,37 +98,46 @@ class Stream extends Model
         @tweetsCollection = new Tweets @get 'tweets'
         
         # Testing code (to be removed) 
-        ###
-        if @id is 123
-            window.setInterval( =>
+        
+        if @id is 123 then window.setInterval( =>
                 window.push_tweet.id = "#{parseInt(Math.random()*100)}" 
                 @tweetsCollection.add camelize window.push_tweet
             , 
-                5000
-            )
+                5000)
         ###
         PUBNUB?.subscribe
             channel: "search:#{@id}:tweets:add"
             callback: (message) =>
-                return if @tweetsCollection.get message.tweet.id
                 message = camelize message
                 @tweetsCollection.add message.tweet
- 
+        ###
+        
         @keywordCollection = new (Collection.extend
             model: Model.extend(idAttribute: "word")
         )
         @keywordCollection.on "add", @syncKeywords
-        @keywordCollection.on "remove", @syncKeywords
-        @keywordCollection.reset (@get('keywords') || "").split(",").map((w) -> w.trim()).filter((w) ->w != "").map((w) -> {word: w})
+        @keywordCollection.reset (@get('keywords') || "")
+                .split(",")
+                .map((w) -> w.trim())
+                .filter((w) -> w != "")
+                .map((w) -> word: w)
     
     syncKeywords: => 
-        @save {keywords: @keywordCollection.pluck("word").join(", ")} 
+        @save keywords: @keywordCollection.pluck("word").join(", ") 
+
     keywords: =>
-        @keywordCollection.pluck("word")
-    addKeyword: (keyword) =>
-        return false if keyword is "" or @keywordCollection.get(keyword)
-        @keywordCollection.add word: keyword
+        @keywordCollection.pluck "word"
+
+    addKeyword: (word) =>
+        if word.length is 0 or typeof word not in ["string","object"]
+            return false
+        words = if typeof word is 'object' then word else [word]
+        keywords = []
+        _.each words, (word) => 
+            (keywords.push word:word) if not @keywordCollection.get word
+        @keywordCollection.add keywords
         true
+
     removeKeyword: (keyword) =>
         @keywordCollection.remove(keyword)
 
@@ -234,71 +243,73 @@ class StreamsView extends View
 
 class StreamView extends View
 
-    tagName: "article"
+    tagName  : "article"
     className: "stream"
 
     events:
-        'click .name': 'editName'
-        'submit .edit-name-form': 'saveName'
-        'click .edit-name': 'editName'
-        'click .save-name': 'saveName'
-        'click .delete-zone': 'deleteStream'
-        'click .settings-btn': 'toggleSettings'
-        'click .search-btn': 'addKeyword'
-        'click .del': 'removeKeyword'
+        'click  .stream.closed .stream-header': 'toggleSettings'
+        'click  .stream.open .toggle-settings': 'toggleSettings'
+        'submit .add-keyword-form': 'addKeyword'
+        'click  .add-keyword'     : 'addKeyword'
+        'click  .remove-keyword'  : 'removeKeyword'
+        'click  .remove-stream'   : 'removeStream' 
 
-    deleteStream: => @model.destroy() 
-
-    initialize: =>
-        @editingName = false
-        @$el.attr 'id', "stream-#{@model.id or @model.cid}"
+    initialize: =>  
+        @settingsOpen = false
+        @$el.addClass "closed"
+        @$el.attr 'id', "stream-#{@model.id}"
         @model.on 'change:keywords', @renderKeywords
-        @model.on 'change:name', @renderName
         @render()
 
     render: =>
         @$el.html _.template Templates.stream, @model.toJSON()
         $('#streams').append @el
-        @renderTweets()
+        @renderTitle()
         @renderKeywords()
+        @renderTweets()
 
-    renderTweets: =>
-        new TweetsView
-            collection: @model.tweetsCollection
-            el:"#tweets-#{@model.id}"
-            parentId:@model.id
+    renderTitle: =>
+        keywords = @model.keywords()  
+        if keywords.length is 0
+            title = "Add keywords here..."
+            @$el.addClass "no-keywords"
+        else
+            title = keywords.join(', ')
+            if title.legnth > 12 then title = title.slice(0,11) + '...'
+        @$('.stream-title').html title
 
-    renderName: =>
-        @editingName = false
-        @$('h1.name').html @model.get 'name'
-        @$('.save-name').css 'display', 'none'
-        
-    editName: =>
-        return if @editingName
-        @editingName = true  
-        tpl = (name) -> 
-            "<form class='edit-name-form'><input type='text' value='#{name}'/></span></form>"
-        @$('.name').html tpl(@model.get 'name')
-        @$('.edit-name').css 'display', 'none'
-        @$('.save-name').css 'display', 'inline-block'
-        @$('.name input').focus()
-
-    saveName: (evt)=>
-        @model.save name: @$('.name input').val().trim()
-        @$('.edit-name').css 'display', 'inline-block'
-        @model.trigger 'change:name'
-        false
-             
     renderKeywords: =>
-        tpl = (keyword) ->
-            "<span class='keyword'><span class='word'>#{keyword}</span>
-             <span class='del'>x</span></span>"
         $keywords = @$('.keywords')
         $keywords.html ""
-        $keywords.append tpl keyword for keyword in @model.keywords()
+        _.each @model.keywords(), (word) =>
+            $keywords.append  _.template Templates.keywords, {word:word}
         @adjustSettingsSize()
+       
+    editKeywords: =>
+        @$('.stream-title').html _.template Templates.editKeywords
+        @$('.add-keyword-form input').focus()
 
+    addKeyword: (evt) =>
+        @model.addKeyword @$('.add-keyword-form input').val().trim().split(',')
+        false
+
+    removeKeyword: (evt) ->
+        word = $(evt.currentTarget).parent().find('.word').html().trim()
+        @model.removeKeyword(word)
+             
     toggleSettings: =>
+        if @settingsOpen 
+            @settingsOpen = false
+            @$el.addClass "closed"
+            @$el.removeClass "open"
+            move("##{@$el.attr 'id'} .toggle-settings").rotate(-45).end()
+            @renderTitle()
+        else
+            @settingsOpen = true
+            @$el.addClass "open"
+            @$el.removeClass "closed"
+            move("##{@$el.attr 'id'} .toggle-settings").rotate(45).end()
+            @editKeywords()
         @$('.settings').toggle()
         @adjustSettingsSize()
 
@@ -311,15 +322,14 @@ class StreamView extends View
             @$('.tweets').css 'top', "#{10+h}"
             @$('.stream-header').css 'height', "#{h}px"
     
-    addKeyword: =>
-        $input = @$('.search-input')
-        keyword = $input.val().trim()
-        if @model.addKeyword keyword
-            $input.val("")
+    removeStream: =>
+        @model.destroy() 
 
-    removeKeyword: (evt) ->
-        word = $(evt.currentTarget).parent().find('.word').html().trim()
-        @model.removeKeyword(word)
+    renderTweets: =>
+        new TweetsView
+            collection: @model.tweetsCollection
+            el:"#tweets-#{@model.id}"
+            parentId:@model.id
 
 class UserView extends View
 
