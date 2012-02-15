@@ -174,13 +174,12 @@ class TweetsView extends View
         @render()
 
     render: =>
-        if @collection.models.length > 0 then @$el.html ""
+        if @collection.length > 0 then @$el.html ""
         @collection.each @renderTweet
 
     renderTweet: (tweet) =>
         new TweetView
             model: tweet
-            parentId:@options.parentId
             parentEl:@el
 
 class TweetView extends View
@@ -193,7 +192,7 @@ class TweetView extends View
         "click .no": "markAsIrrelevant"
 
     initialize: =>
-        @$el.attr 'id', "tweet-#{@options.parentId}-#{@model.id}"
+        @$el.attr 'id', "tweet-#{@model.id}"
         @model.on 'change:id', @render
         @model.on 'change:category', @renderCategory
         @$el.mouseenter(@showActions).mouseleave(@hideActions)
@@ -285,8 +284,6 @@ class StreamView extends View
         'click .search-btn': 'addKeyword'
         'click .del': 'removeKeyword'
 
-    deleteStream: =>
-      @model.destroy()
 
     initialize: =>
         @editingName = false
@@ -303,8 +300,7 @@ class StreamView extends View
     renderTweets: =>
         new TweetsView
             collection: @model.tweetsCollection
-            el:"#tweets-#{@model.id}"
-            parentId:@model.id
+            el: @$(".tweets")[0]
 
     renderName: =>
         @editingName = false
@@ -358,6 +354,9 @@ class StreamView extends View
     removeKeyword: (evt) ->
         word = $(evt.currentTarget).parent().find('.word').html().trim()
         @model.removeKeyword(word)
+
+    deleteStream: =>
+      @model.destroy()
 
 class UserView extends View
 

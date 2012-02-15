@@ -14,7 +14,7 @@ window.Templates =
           <span class="delete-stream iconic"></span> Delete this stream?</div>
       </section>
     </header> 
-    <section id="tweets-<%=id%>" class="tweets">
+    <section class="tweets">
       <h2>No tweets yet, add some keywords...</h2>
     </section>
   """
