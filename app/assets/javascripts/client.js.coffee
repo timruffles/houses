@@ -109,7 +109,7 @@ class Stream extends Model
         @tweetsCollection = new Tweets @get 'tweets'
         
         # Testing code (to be removed) 
-        ### 
+        
         if @id is 123 then window.setInterval( =>
                 window.push_tweet.id = "#{parseInt(Math.random()*100)}" 
                 @tweetsCollection.add camelize window.push_tweet
@@ -121,6 +121,7 @@ class Stream extends Model
             callback: (message) =>
                 message = camelize message
                 @tweetsCollection.add message.tweet
+        ###
         
         @keywordCollection = new (Collection.extend
             model: Model.extend(idAttribute: "word")
@@ -275,7 +276,6 @@ class StreamsView extends View
 
     tutorialNext: ->
       @user.set tutorialState: (@user.get("tutorialState") || 0) + 1
-
     createStream: =>
       if @app.canMakeStream()
         @app.get('streams').create {name:'New Stream'}, {wait:true}
@@ -300,6 +300,7 @@ class StreamView extends View
         @settingsOpen = false
         @$el.addClass "closed"
         @$el.attr 'id', "stream-#{@model.id}"
+        @render()
     render: =>
         @$el.html _.template Templates.stream, @model.toJSON()
         $('#streams').append @el
