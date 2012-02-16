@@ -186,14 +186,13 @@ class TweetsView extends View
         @render()
 
     render: =>
-        if @collection.models.length > 0 then @$el.html ""
+        if @collection.length > 0 then @$el.html ""
         @collection.each @renderTweet
 
     renderTweet: (tweet) =>
-        new TweetView
+        tweetView = new TweetView
             model: tweet
-            parentId:@options.parentId
-            parentEl:@el
+            parentEl: @el
 
 class TweetView extends View
 
@@ -205,7 +204,7 @@ class TweetView extends View
         "click .no": "markAsIrrelevant"
 
     initialize: =>
-        @$el.attr 'id', "tweet-#{@options.parentId}-#{@model.id}"
+        @$el.attr 'id', _.uniqueId('tweet-')
         @model.on 'change:id', @render
         @model.on 'change:category', @renderCategory
         @$el.mouseenter(@showActions).mouseleave(@hideActions)
@@ -301,6 +300,7 @@ class StreamView extends View
         @$el.addClass "closed"
         @$el.attr 'id', "stream-#{@model.id}"
         @render()
+
     render: =>
         @$el.html _.template Templates.stream, @model.toJSON()
         $('#streams').append @el
@@ -318,7 +318,7 @@ class StreamView extends View
             title = keywords.join(', ')
             if title.legnth > 12 then title = title.slice(0,11) + '...'
         @$('.stream-title').html title
-
+    
     renderKeywords: =>
         $keywords = @$('.keywords')
         $keywords.html ""
@@ -338,7 +338,6 @@ class StreamView extends View
 
     removeKeyword: (evt) ->
         word = $(evt.currentTarget).parent().find('.word').html().trim()
-        console.log word
         @model.removeKeyword(word)
              
     toggleSettings: =>
@@ -372,8 +371,10 @@ class StreamView extends View
     renderTweets: =>
         new TweetsView
             collection: @model.tweetsCollection
-            el:"#tweets-#{@model.id}"
-            parentId:@model.id
+            el: @$(".tweets")[0]
+
+    deleteStream: =>
+      @model.destroy()
 
 class UserView extends View
 

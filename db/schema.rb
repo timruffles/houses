@@ -11,12 +11,13 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120209164644) do
+ActiveRecord::Schema.define(:version => 20120215211855) do
 
   create_table "classified_tweets", :force => true do |t|
-    t.integer "search_id",              :null => false
-    t.integer "tweet_id",  :limit => 8, :null => false
-    t.string  "category",               :null => false
+    t.integer  "search_id",               :null => false
+    t.integer  "tweet_id",   :limit => 8, :null => false
+    t.string   "category",                :null => false
+    t.datetime "created_at"
   end
 
   create_table "searches", :force => true do |t|

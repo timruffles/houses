@@ -11,7 +11,7 @@ window.Templates =
             </div>
       </section>
     </header> 
-    <section id="tweets-<%=id%>" class="tweets">
+    <section class="tweets">
         <span class="help">
         Add some kewords to start getting tweets!
         </span>
