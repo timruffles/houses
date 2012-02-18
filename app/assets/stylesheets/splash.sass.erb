@@ -1,74 +1,60 @@
 //= require bootstrap
 @import "compass/css3/gradient"
+
+$darkblue: #1a243d
+$lightblue: #bdcddf
+$egg: #f3e4c7
+
 html
   height: 100%
 body
-  +linear-gradient(color-stops(#f0f9ff 0%,#cbebff 47%,#a1dbff 100%))
+  background: $egg url("<%= asset_path "" %>/splash_bg.gif") repeat-x
   background-attachment: fixed
   overflow: hidden
   height: 100%
   
 #headline
+  color: $egg
   text-align: center
-  margin-top: 2em
+  margin-top: 5%
+  margin-bottom: 2%
   h1
+    font-family: 'Handlee', cursive
+    color: lighten($lightblue,15)
     font-size: 6em
     line-height: 1em
-    font-weight: 900
+    font-weight: 800
     text-rendering: optimizelegibility
   h2
-    width: 80%
+    font-family: 'Handlee', cursive
+    color: lighten($lightblue,15)
+    width: 70%
+    font-size: 2em
     margin: 0 auto
     margin-top: 1em
-#info
-  margin-top: 1em
-  .box
-    p
-      text-align: left
+
+.thumbnails
+  width: 500px
+  margin: 0 auto
+
 #extra
-  margin-top: 2em
-  text-align: center
-  .btn
-    color: #33ccff
-    font-size: 3em
+  display: block
+  width: 240px
+  margin: 0 auto
+  .btn 
+    margin-top: 5%
+    color: $darkblue
+    font-size: 2em
+    font-family: 'Handlee', cursive
     text-shadow: none
-    background-color: #ddecf5
-    border-color: #33ccff
-    +linear-gradient(color-stops(#fdfefe,#fdfefe 25%,#ddecf5 100%),top)
+    background-color: $lightblue
+    border-color: lighten($darkblue,20)
+    +linear-gradient(color-stops(lighten($lightblue,20) 0%,$lightblue 100%),top)
     padding-right: 1em
     img
       float: left
       margin-right: .5em
 
-
 #splash
   z-index: 5
   position: relative
-.bird
-  position: relative
-  width: 48px
-  height: 48px
-  &.gold
-    background: url("<%= asset_path "" %>/gold.png") no-repeat
-    display: inline
-    text-align: center
-  @each $distance in far, near, nearest
-    &.grey-#{$distance}
-      background: url("<%= asset_path "" %>/grey-#{$distance}.png") no-repeat
-#birds
-  .far
-    left: 1%
-    -webkit-transform: scale(0.6)
-  .near
-    left: 20%
-    -webkit-transform: translate(-20%,0) scale(0.7)
-  .nearest
-    left: 150%
-    -webkit-transform: translate(-140%,0)
-  .distance
-    position: absolute
-    top: 10%
-    width: 100%
-    height: 600px
-    overflow: hidden
-

@@ -110,6 +110,7 @@ class Stream extends Model
         
         # Testing code (to be removed) 
         
+        ###
         if @id is 123 then window.setInterval( =>
                 window.push_tweet.id = "#{parseInt(Math.random()*100)}" 
                 @tweetsCollection.add camelize window.push_tweet
@@ -121,7 +122,6 @@ class Stream extends Model
             callback: (message) =>
                 message = camelize message
                 @tweetsCollection.add message.tweet
-        ###
         
         @keywordCollection = new (Collection.extend
             model: Model.extend(idAttribute: "word")
