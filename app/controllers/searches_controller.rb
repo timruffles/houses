@@ -17,7 +17,7 @@ class SearchesController < ApplicationController
     respond_with @searches.map {|s| SearchPresenter.new s }
   end
   def create
-    respond_with current_user.searches.create params[:search]
+    respond_with current_user.searches.create :keywords => params[:keywords]
   end
   def update
     @search = Search.find(params[:id])

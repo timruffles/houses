@@ -105,24 +105,14 @@ class Tweets extends Collection
 
 class Stream extends Model
     initialize: =>
-        
+
         @tweetsCollection = new Tweets @get 'tweets'
-        
-        # Testing code (to be removed) 
-        
-        ###
-        if @id is 123 then window.setInterval( =>
-                window.push_tweet.id = "#{parseInt(Math.random()*100)}" 
-                @tweetsCollection.add camelize window.push_tweet
-            , 
-                5000)
-        ###
-        PUBNUB?.subscribe
-            channel: "search:#{@id}:tweets:add"
-            callback: (message) =>
-                message = camelize message
-                @tweetsCollection.add message.tweet
-        
+
+        if @isNew()
+          @on "change:id", @subscribe
+        else
+          @subscribe()
+
         @keywordCollection = new (Collection.extend
             model: Model.extend(idAttribute: "word")
         )
@@ -139,6 +129,14 @@ class Stream extends Model
 
     keywords: =>
         @keywordCollection.pluck "word"
+
+    subscribe: =>
+        PUBNUB?.subscribe
+            channel: "search:#{@id}:tweets:add"
+            callback: (message) =>
+                message = camelize message
+                unless @tweetsCollection.get message.tweet.id
+                  @tweetsCollection.add message.tweet
 
     addKeyword: (word) =>
         if word.length is 0 or typeof word not in ["string","object"]
@@ -277,7 +275,7 @@ class StreamsView extends View
       @user.set tutorialState: (@user.get("tutorialState") || 0) + 1
     createStream: =>
       if @app.canMakeStream()
-        @app.get('streams').create {name:'New Stream'}, {wait:true}
+        @app.get('streams').create {keywords: @$("input.keywords").val()}, {wait:true}
       else
         alert("Sorry, you can only create #{@app.maxStreams} streams")
       false
