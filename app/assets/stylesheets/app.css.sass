@@ -251,7 +251,8 @@ form.add-keyword-form
   top: 51px
   bottom: 0
   word-wrap: break-word
-
+.hidden
+  display: none
 .tweet
   padding: 5px 5px 5px 62px
   position: relative
@@ -263,7 +264,23 @@ form.add-keyword-form
   &.interesting .text, .interesting.text a
     color: green
   &.boring
-    display: none
+    padding-top: 2px
+    padding-bottom: 2px
+    img, .user-info, .time-ago
+      display: none
+    color: #ccc
+    .text
+      text-overflow: ellipsis
+      white-space: nowrap
+      font-size: 0.8em
+    .actions
+      position: absolute
+      right: 0
+      top: 0
+      background: #fff
+    &:hover
+      color: #000
+
 
   a
     color: darken($blue,20%)
@@ -338,3 +355,8 @@ form.add-keyword-form
   .progress
     margin-top: 1em
 
+.yes-no-tutorial
+  background: url(image-path("yes_no_tutorial.png")) no-repeat center center
+  width: 100%
+  height: 25px
+  margin-bottom: .5em

@@ -239,12 +239,12 @@ class TweetView extends View
         (@model.save category:state) if (@model.get 'category') isnt state
 
     showActions: =>
-        @$('.time-ago').css 'display', 'none'
-        @$('.actions').css 'display', 'block'
+        @$('.time-ago').toggleClass "hidden", true
+        @$('.actions').toggleClass "hidden", false
 
     hideActions: =>
-        @$('.time-ago').css 'display', 'block'
-        @$('.actions').css 'display', 'none'
+        @$('.time-ago').toggleClass "hidden", false
+        @$('.actions').toggleClass "hidden", true
 
 class StreamsView extends View
 

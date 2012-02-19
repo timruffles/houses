@@ -29,13 +29,13 @@ window.Templates =
   """
   tweet: """
     <img class="profile_image" src="<%=user.profileImageUrl%>" alt="<%='@'+user.screenName%>"/>
-    <p>
+    <p class="user-info">
        <span class="username"><%=user.name%></span>
-       <span class="screenname"><%='@'+user.screenName%></span>
+       <a href="http://twitter.com/intent/user/<%= user.screenName %>" class="screenname"><%='@'+user.screenName%></a>
     </p>
     <span class="text"><%= text.parseURL().parseHashtag() %></span>
     <div class="time-ago" title="<%=createdAt%>"></div>
-    <div class="actions" style="display:none"><span class="iconic yes"> Yes</span> | <span
+    <div class="actions hidden"><span class="iconic yes"> Yes</span> | <span
     class="iconic no"> No</span></div>
   """
   addStream: addStream = """
@@ -53,12 +53,10 @@ window.Templates =
     """
     1: """
       <p class="tutorial">
-        Teach the bird which tweets are interesting you by hovering over them and clicking "Yes" or "No".
+        Teach the bird which tweets are interesting by hovering over them and clicking "Yes" or "No".
       </p>
-      <p>
-        <div class="actions" style="display:none"><span class="iconic yes"> Yes</span> | <span
-    class="iconic no"> No</span></div>
-      </p>
+      <div class="yes-no-tutorial">
+      </div>
       <button class="next large btn">Got it -></button>
     """
     2: """
