@@ -55,6 +55,10 @@ window.Templates =
       <p class="tutorial">
         Teach the bird which tweets are interesting you by hovering over them and clicking "Yes" or "No".
       </p>
+      <p>
+        <div class="actions" style="display:none"><span class="iconic yes"> Yes</span> | <span
+    class="iconic no"> No</span></div>
+      </p>
       <button class="next large btn">Got it -></button>
     """
     2: """

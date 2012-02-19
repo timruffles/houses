@@ -81,7 +81,6 @@ class App extends Model
         streams.fetch
           success: =>
             @set loaded: true
-          add: true
 
       @set streams:streams
       @set user:user
@@ -165,6 +164,10 @@ TUTORIAL_CLASSIFY = 1
 TUTORIAL_SHARE = 2
 TUTORIAL_FINISHED = 3
 class User extends Model
+    initialize: ->
+        @set tutorialState: parseInt(localStorage.tutorialState || 0)
+        @on "change:tutorialState", (user,state) ->
+          localStorage.tutorialState = state
     url: "/users"
     login: (opts = {}) ->
       opts.url = "/users/me"
@@ -253,11 +256,16 @@ class StreamsView extends View
 
     initialize: ({@user,@app}) =>
         @collection.bind 'add', @renderStream
-        @collection.bind "add remove reset", @renderControl
+        @collection.bind "add remove", @renderControl
+        @collection.bind 'reset', @render
         @app.bind "change:loaded", =>
           @$(".loading").remove()
           @renderControl()
         @user.bind "change:tutorialState", @renderControl
+
+    render: =>
+        @collection.each @renderStream
+        @renderControl()
 
     renderControl: =>
         @controlEl?.remove()
