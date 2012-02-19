@@ -1,5 +1,5 @@
 //= require bootstrap
-@import compass/css3/gradient
+@import compass/css3/images
 
 $darkblue: #1a243d
 $lightblue: #bdcddf
@@ -49,7 +49,7 @@ body
     text-shadow: none
     background-color: $lightblue
     border-color: lighten($darkblue,20)
-    +linear-gradient(color-stops(lighten($lightblue,20) 0%,$lightblue 100%),top)
+    +background(linear-gradient(color-stops(lighten($lightblue,20) 0%,$lightblue 100%)))
     padding-right: 1em
     img
       float: left
