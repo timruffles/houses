@@ -144,6 +144,7 @@ class Stream extends Model
         words = if typeof word is 'object' then word else [word]
         keywords = []
         _.each words, (word) =>
+            return false if word is ""
             (keywords.push word:word) if not @keywordCollection.get word
         if not keywords.length 
             return false
