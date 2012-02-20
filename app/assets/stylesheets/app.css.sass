@@ -121,12 +121,14 @@ body
   width: 332px
   &.closed .stream-header
     cursor: pointer
+    .stream-title
+      color: darken($blue,10%)
     &:hover
-      .toggle-settings
+      .toggle-settings, .stream-title
         color: darken($blue,10%)
   &.open .stream-header
     cursor: default
-  &.no-keywords
+  &.no-keywords .stream-header
     .stream-title
       color: $lgrey
     &:hover .stream-title 
@@ -157,7 +159,7 @@ body
     color: darken($blue,10%)
 
 .stream-title input[type=text]
-  height: 25px
+  height: 30px
   width: 245px
   font-size: 16px
   padding: 3px
@@ -165,12 +167,13 @@ body
   float: left
 
 form.add-keyword-form 
-  margin: 0px
+  margin: 2px 0px
 
 .add-keyword 
   cursor: pointer
   margin: 3px 0px 0px 7px
   font-size: 24px
+  line-height: 24px
   &:before
     content: '\e008'
   color: darken($blue,10%)
