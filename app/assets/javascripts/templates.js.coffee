@@ -7,7 +7,8 @@ window.Templates =
         <section class="settings">
             <section class="keywords"></section>
             <div>
-            <span class="remove-stream iconic"> Delete this stream</span>            
+            <span class="remove-stream iconic"> Delete this stream</span>   
+            <button class="done large btn"><span class="iconic"></span> Done</button>
             </div>
       </section>
     </header> 
@@ -24,7 +25,7 @@ window.Templates =
     </span>
   """
   editKeywords:"""
-    <form class='add-keyword-form'><input type='text'/></form>
+    <form class='add-keyword-form'><input placeholder="Keywords you're interested in" type='text'/></form>
     <span class='add-keyword iconic'></span>
   """
   tweet: """

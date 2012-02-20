@@ -86,7 +86,8 @@ class App extends Model
       @set user:user
       user.login()
 
-      tutorialState = user.get("tutorialState") || 0
+      tutorialState = user.get("tutorialState") ||0 
+
       if tutorialState == 0
         streams.on "add", ->
           user.set tutorialState: 1
@@ -296,10 +297,11 @@ class StreamView extends View
     events:
         'click  .stream.closed .stream-header': 'toggleSettings'
         'click  .stream.open .toggle-settings': 'toggleSettings'
+        'click  .settings .done:'             : 'toggleSettings'
         'submit .add-keyword-form': 'addKeyword'
         'click  .add-keyword'     : 'addKeyword'
         'click  .remove-keyword'  : 'removeKeyword'
-        'click  .remove-stream'   : 'removeStream' 
+        'click  .remove-stream'   : 'removeStream'
 
     initialize: =>  
         @settingsOpen = false
