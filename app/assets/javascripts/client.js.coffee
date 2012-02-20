@@ -226,8 +226,9 @@ class TweetView extends View
     renderCategory: =>
         cat = @model.get 'category'
         if cat is 'boring' and @model.hasChanged 'category' 
-            move(@el).scale(0).ease('snap').duration(350)
-            .end => @$el.attr 'class', "#{@className} #{cat}"
+          #move(@el).scale(0).ease('snap').duration(350)
+          #  .end => 
+          @$el.attr 'class', "#{@className} #{cat}"
         else
             @$el.attr 'class', "#{@className} #{cat}"
 
