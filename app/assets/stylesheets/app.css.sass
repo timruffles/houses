@@ -206,6 +206,28 @@ form.add-keyword-form
     .iconic
       &:before
         content: '\2713'
+
+  .keywords
+    width: 310px
+    padding-bottom: 10px
+    border-bottom: solid 1px $lgrey
+    margin-bottom: 10px
+
+    .keyword 
+      display: inline-block
+      background-color: darken($blue,10%)
+      color: $white
+      border: solid 1px darken($blue,20%)
+      margin: 0px 5px 5px 0
+      padding: 3px 6px
+      +border-radius(3px)
+      .remove-keyword 
+        display: inline-block
+        color: $white
+        cursor: pointer
+        &:before 
+          font-size: 10px
+          content: '\2717'
   
 .search-btn
   display: inline-block
@@ -221,27 +243,7 @@ form.add-keyword-form
   +border-radius(5px)
   border: solid 1px lighten($lgrey,10%)
 
-.keywords
-  width: 310px
-  padding-bottom: 10px
-  border-bottom: solid 1px $lgrey
-  margin-bottom: 10px
 
-.keyword 
-  display: inline-block
-  background-color: darken($blue,10%)
-  color: $white
-  border: solid 1px darken($blue,20%)
-  margin: 0px 5px 5px 0
-  padding: 3px 6px
-  +border-radius(3px)
-  .remove-keyword 
-    display: inline-block
-    color: $white
-    cursor: pointer
-    &:before 
-      font-size: 10px
-      content: '\2717'
 .remove-stream
   color: $dgrey
   display: inline-block
