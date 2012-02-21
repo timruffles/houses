@@ -183,19 +183,31 @@ class User extends Model
       @trigger "login"
 
 class TweetsView extends View
+  
+  initialize: =>
+    @renderQueue = []
+    @collection.bind 'add', @addToQueue
+    @render()
+    @queuePaused = false
+    @$el
+      .mouseenter(=> @queuePaused = true)
+      .mouseleave(=> @queuePaused = false)
+    setInterval @renderFromQueue, 2000
 
-    initialize: =>
-        @collection.bind 'add', @renderTweet
-        @render()
+  addToQueue: (tweet) => @renderQueue.unshift tweet
 
-    render: =>
-        if @collection.length > 0 then @$el.html ""
-        @collection.each @renderTweet
+  render: =>
+    if @collection.length > 0 then @$el.html ""
+    @collection.each @addToQueue
 
-    renderTweet: (tweet) =>
-        tweetView = new TweetView
-            model: tweet
-            parentEl: @el
+  renderFromQueue: =>
+    if @renderQueue.length > 0 and not @queuePaused
+      @renderTweet @renderQueue.pop()
+
+  renderTweet: (tweet) =>
+    tweetView = new TweetView
+      model: tweet
+      parentEl: @el
 
 class TweetView extends View
 
@@ -212,23 +224,23 @@ class TweetView extends View
         @model.on 'change:category', @renderCategory
         @$el.mouseenter(@showActions).mouseleave(@hideActions)
         @render()
-  
+          
     render: =>
-        @renderCategory() if @model.get 'category'              
-        @$el.html _.template Templates.tweet, @model.toJSON() 
-        if $("##{@$el.attr 'id'}").length is 0 
-            $(@options.parentEl).prepend @el
-            h = @$el.height() 
-            @$el.css('top',"-#{h}px")
-            @$el.animate {top:"0"} 
-            @$('.time-ago').timeago()
-       
+        @renderCategory() if @model.get 'category'
+        @$el.html _.template Templates.tweet, @model.toJSON()
+        if $("##{@$el.attr 'id'}").length is 0
+          $(@options.parentEl).prepend @el
+          h = @$el.height() 
+          @$el.hide().css height: 0
+          @$el.show().animate(height:h, duration:2000)
+          @$('.time-ago').timeago() 
+          
     renderCategory: =>
         cat = @model.get 'category'
         if cat is 'boring' and @model.hasChanged 'category' 
-          #move(@el).scale(0).ease('snap').duration(350)
-          #  .end => 
-          @$el.attr 'class', "#{@className} #{cat}"
+            @$el.css height: 'auto'
+            @$el.attr 'class', "#{@className} #{cat}"
+
         else
             @$el.attr 'class', "#{@className} #{cat}"
 
