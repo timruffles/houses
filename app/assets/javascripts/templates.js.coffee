@@ -36,8 +36,13 @@ window.Templates =
     </p>
     <span class="text"><%= text.parseURL().parseHashtag() %></span>
     <div class="time-ago" title="<%=createdAt%>"></div>
-    <div class="actions hidden"><span class="iconic yes"> Yes</span> | <span
-    class="iconic no"> No</span></div>
+    <div class="actions hidden">
+        <span class="iconic yes"> Yes</span> 
+        <span class="iconic no"> No</span> 
+        <span class="intents"><a href="https://twitter.com/intent/tweet?in_reply_to=<%=idStr%>">Reply</a>
+        <a href="https://twitter.com/intent/retweet?tweet_id=<%=idStr%>">Retweet</a>
+        <a href="https://twitter.com/intent/favorite?tweet_id=<%=idStr%>">Favorite</a></span>
+    </div>
   """
   addStream: addStream = """
     <form class="create-stream">
