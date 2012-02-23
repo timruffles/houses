@@ -1,4 +1,4 @@
-# TODO use twitter anywhere to add hovercard, webintents. Web intents can make replying etc look v nice
+
 {Model,View,Collection,Router,Events} = Backbone
 
 MAX_STREAMS = 3
@@ -73,6 +73,7 @@ Model::sync = Collection::sync = sync = (method,model,options = {}) ->
   params.processData = false if params.type isnt "GET" and not Backbone.emulateJSON
   $.ajax params
 
+
 class App extends Model
     initialize: ->
       streams = new Streams()
@@ -98,66 +99,61 @@ class App extends Model
     canMakeStream: ->
       @get('streams').length < @maxStreams
 
+
 class Tweet extends Model
 class Tweets extends Collection
     model: Tweet
     url: "/tweets"
 
 class Stream extends Model
-    initialize: =>
 
-        @tweetsCollection = new Tweets @get 'tweets'
+  initialize: =>
 
-        if @isNew()
-          @on "change:id", @subscribe
-        else
-          @subscribe()
+    @tweetsCollection = new Tweets @get 'tweets'
 
-        @keywordCollection = new (Collection.extend
-            model: Model.extend(idAttribute: "word")
-        )
-        @keywordCollection.on "add", @syncKeywords
-        @keywordCollection.on "remove", @syncKeywords
-        @keywordCollection.reset (@get('keywords') || "")
-                .split(",")
-                .map((w) -> w.trim())
-                .filter((w) -> w != "")
-                .map((w) -> word: w)
-    
-    syncKeywords: => 
-        @save keywords: @keywordCollection.pluck("word").join(", ") 
+    if @isNew() then @on "change:id", @subscribe
+    else @subscribe()
 
-    keywords: =>
-        @keywordCollection.pluck "word"
+    @keywords = new (Collection.extend model: Model.extend(idAttribute: "word"))
+    @keywords.on "add", @saveKeywords
+    @keywords.on "remove", @saveKeywords
+    @keywords.reset (@get('keywords') or "")
+      .split(",")
+      .map((w) -> w.trim())
+      .filter((w) -> w != "")
+      .map((w) -> word: w)
 
-    subscribe: =>
-        PUBNUB?.subscribe
-            channel: "search:#{@id}:tweets:add"
-            callback: (message) =>
-                message = camelize message
-                unless @tweetsCollection.get message.tweet.id
-                  @tweetsCollection.add message.tweet
+  saveKeywords: => 
+    @save keywords: @keywords.pluck("word").join(", ") 
+  
+  getKeywords: =>
+    @keywords.pluck "word"
 
-    addKeyword: (word) =>
-        if word.length is 0 or typeof word not in ["string","object"]
-            return false
-        words = if typeof word is 'object' then word else [word]
-        keywords = []
-        _.each words, (word) =>
-            return false if word is ""
-            (keywords.push word:word) if not @keywordCollection.get word
-        if not keywords.length 
-            return false
-        @keywordCollection.add keywords  
-        true
+  subscribe: =>
+    PUBNUB?.subscribe
+      channel: "search:#{@id}:tweets:add"
+      callback: (message) =>
+        message = camelize message
+        unless @tweetsCollection.get message.tweet.id
+          @tweetsCollection.add message.tweet
 
-    removeKeyword: (word) =>
-        @keywordCollection.remove(word)
+  addKeywords: (words) =>
+    return false if typeof words isnt "object" or words.length is 0
+    @keywords.add words
+      .map((w) => w.trim())
+      .filter((w) => w != "" and not @keywords.get w)
+      .map((w) -> word:w)
+    true
+
+  removeKeyword: (word) =>
+    @keywords.remove(word)
+
 
 class Streams extends Collection
-    model: Stream
-    url: "/streams"
-    fetch: (opts = {}) ->
+
+  model: Stream 
+  url: "/streams"
+  fetch: (opts = {}) ->
       opts.url = "/streams/mine"
       Collection::fetch.call this, opts
 
@@ -165,22 +161,26 @@ TUTORIAL_CREATE = 0
 TUTORIAL_CLASSIFY = 1
 TUTORIAL_SHARE = 2
 TUTORIAL_FINISHED = 3
+
 class User extends Model
-    initialize: ->
-        @set tutorialState: parseInt(localStorage.tutorialState || 0)
-        @on "change:tutorialState", (user,state) ->
-          localStorage.tutorialState = state
-    url: "/users"
-    login: (opts = {}) ->
-      opts.url = "/users/me"
-      @fetch _.extend opts,
-        success: =>
-          @trigger "login"
-        error: =>
-          @trigger "needs-login"
-    loginAs: (user) ->
-      @set user
-      @trigger "login"
+  
+  initialize: =>
+    
+    @set tutorialState: parseInt(localStorage.tutorialState || 0)
+    @on "change:tutorialState", (user,state) ->
+      localStorage.tutorialState = state
+  
+  url: "/users"
+
+  login: (opts = {}) => 
+    opts.url = "/users/me"
+    @fetch _.extend opts,
+      success: => @trigger "login"
+      error: => @trigger "needs-login"
+
+  loginAs: (user) =>
+    @set user
+    @trigger "login"
 
 class TweetsView extends View
   
@@ -198,7 +198,7 @@ class TweetsView extends View
 
   render: =>
     if @collection.length > 0 then @$el.html ""
-    @collection.each @addToQueue
+    @collection.each @renderTweet
 
   renderFromQueue: =>
     if @renderQueue.length > 0 and not @queuePaused
@@ -332,21 +332,21 @@ class StreamView extends View
         @renderTweets()
 
     renderTitle: =>
-        keywords = @model.keywords()  
-        if keywords.length is 0
+        words = @model.getKeywords()  
+        if words.length is 0
             title = "Add keywords here..."
             @$el.addClass "no-keywords"
         else
             @$el.removeClass "no-keywords"
-            title = keywords.join(', ')
-            if title.legnth > 12 then title = title.slice(0,11) + '...'
+            title = words.join(', ')
+            if title.length > 22 then title = title.slice(0,22) + '...'
         @$('.stream-title').html title
     
     renderKeywords: =>
         $keywords = @$('.keywords')
         $keywords.html ""
-        _.each @model.keywords(), (word) =>
-            $keywords.append  _.template Templates.keywords, {word:word}
+        @model.getKeywords().map (w) => 
+          $keywords.append _.template Templates.keywords, {word:w}
         @adjustSettingsSize()
        
     editKeywords: =>
@@ -355,7 +355,7 @@ class StreamView extends View
 
     addKeyword: (evt) =>
         $input = @$('.add-keyword-form input')
-        if @model.addKeyword $input.val().trim().split(',')
+        if @model.addKeywords $input.val().trim().split(',')
             $input.val('')
         false
 
@@ -411,18 +411,21 @@ class UserView extends View
 
 class AppView extends View
 
-    el: "#app"
+  el: "#app"
 
-    initialize: =>
-        new UserView model:@model.get 'user'
-        new StreamsView
-          collection:@model.get 'streams'
-          user: @model.get 'user'
-          app: @model
-        twttr.anywhere (T) ->
-            T.hovercards("#streams")
-            T.linkifyUsers("#streams")
-            T(".profile_image").hovercards username: (node) -> node.alt
+  initialize: =>
+    
+    new UserView model:@model.get 'user'
+    
+    new StreamsView
+      collection:@model.get 'streams'
+      user: @model.get 'user'
+      app: @model
+    
+    twttr.anywhere (T) ->
+      T.hovercards("#streams")
+      T.linkifyUsers("#streams")
+      T(".profile_image").hovercards username: (node) -> node.alt
 
 $ ->
   authenticityToken = $("[name=csrf-token]").attr("content")
