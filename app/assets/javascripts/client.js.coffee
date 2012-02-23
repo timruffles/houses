@@ -182,30 +182,34 @@ class User extends Model
     @set user
     @trigger "login"
 
+
 class TweetsView extends View
   
   initialize: =>
     @renderQueue = []
+    @queuePaused = false
     @collection.bind 'add', @addToQueue
     @render()
-    @queuePaused = false
     @$el
       .mouseenter(=> @queuePaused = true)
       .mouseleave(=> @queuePaused = false)
-    setInterval @renderFromQueue, 2000
+    
+    setInterval @renderFromQueue, 500
 
   addToQueue: (tweet) => @renderQueue.unshift tweet
 
   render: =>
     if @collection.length > 0 then @$el.html ""
-    @collection.each @renderTweet
+    @collection.each (tweet) => @renderTweet tweet, false
 
   renderFromQueue: =>
     if @renderQueue.length > 0 and not @queuePaused
-      @renderTweet @renderQueue.pop()
+      @renderTweet @renderQueue.pop(), true
 
-  renderTweet: (tweet) =>
+  renderTweet: (tweet, slideIn) =>
+
     tweetView = new TweetView
+      slideIn: slideIn
       model: tweet
       parentEl: @el
 
@@ -226,21 +230,21 @@ class TweetView extends View
         @render()
           
     render: =>
-        @renderCategory() if @model.get 'category'
-        @$el.html _.template Templates.tweet, @model.toJSON()
+        @renderCategory() if @model.get 'category' 
+        @$el.html _.template Templates.tweet, @model.toJSON() 
         if $("##{@$el.attr 'id'}").length is 0
           $(@options.parentEl).prepend @el
-          h = @$el.height() 
-          @$el.hide().css height: 0
-          @$el.show().animate(height:h, duration:2000)
-          @$('.time-ago').timeago() 
-          
+          @$('.time-ago').timeago()
+          if @options.slideIn
+            h = @$el.height() 
+            @$el.hide().css height: 0
+            @$el.show().animate(height:h, duration:2000)
+
     renderCategory: =>
         cat = @model.get 'category'
         if cat is 'boring' and @model.hasChanged 'category' 
             @$el.css height: 'auto'
             @$el.attr 'class', "#{@className} #{cat}"
-
         else
             @$el.attr 'class', "#{@className} #{cat}"
 
