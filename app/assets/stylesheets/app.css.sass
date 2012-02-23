@@ -130,7 +130,7 @@ body
     cursor: default
   &.no-keywords .stream-header
     .stream-title
-      color: $lgrey
+      color: darken($lgrey,5%)
     &:hover .stream-title 
       color: darken($lgrey,10%)
 
@@ -153,7 +153,6 @@ body
   overflow: hidden
   font-size: 22px
   float: left
-  cursor: pointer
   font-weight: 700
   &.edit-name:hover
     color: darken($blue,10%)
@@ -177,7 +176,13 @@ form.add-keyword-form
   &:before
     content: '\e008'
   color: darken($blue,10%)
-  float: left     
+  float: left 
+
+// Hacky Fix for screen flickering in chrome 
+// on css3 anims, makes the icons/fonts look
+// a tiny bit blured though... 
+.toggle-settings, .stream-header
+  -webkit-transform: translateZ(0)
 
 .toggle-settings
   color: darken($lgrey,10%)

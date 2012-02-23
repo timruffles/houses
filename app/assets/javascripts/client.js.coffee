@@ -381,12 +381,12 @@ class StreamView extends View
 
     adjustSettingsSize: =>
         if (@$('.settings').css 'display') is 'none'
-            @$('.tweets').animate top: 51
-            @$('.stream-header').animate height: '44px'
+            @$('.tweets').animate top: 51, 50
+            @$('.stream-header').animate height: '44px', 50
         else 
             h = 60 + parseInt @$('.settings').css('height').replace('px', '')
-            @$('.tweets').animate top: 10+h
-            @$('.stream-header').animate height: "#{h}px"
+            @$('.tweets').animate top: 10+h, 50
+            @$('.stream-header').animate height: "#{h}px", 50
     
     removeStream: =>
         @model.destroy() 
