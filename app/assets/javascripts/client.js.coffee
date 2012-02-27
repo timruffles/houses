@@ -102,15 +102,13 @@ class App extends Model
 
 class Tweet extends Model
 class Tweets extends Collection
-    model: Tweet
-    url: "/tweets"
+  model: Tweet
+  url: "/tweets"
 
 class Stream extends Model
 
   initialize: =>
-
     @tweetsCollection = new Tweets @get 'tweets'
-
     if @isNew() then @on "change:id", @subscribe
     else @subscribe()
 
@@ -209,61 +207,63 @@ class TweetsView extends View
   renderTweet: (tweet, slideIn) =>
 
     tweetView = new TweetView
-      slideIn: slideIn
       model: tweet
-      parentEl: @el
+
+    if not @$el.find(tweetView.el).length
+      @$el.append tweetView.el
+      if slideIn
+        h = tweetView.$el.height() 
+        tweetView.$el.hide().css height: 0
+        tweetView.$el.show().animate(height:h, duration:2000)
+
+CATEGORY_BORING = "boring"
+CATEGORY_INTERESTING = "interesting"
 
 class TweetView extends View
 
-    tagName: "article"
-    className: "tweet"
+  tagName: "article"
+  className: "tweet"
 
-    events:
-        "click .yes": "markAsRelevant"
-        "click .no": "markAsIrrelevant"
+  events:
+    "click .yes": "markAsRelevant"
+    "click .no": "markAsIrrelevant"
 
-    initialize: =>
-        @$el.attr 'id', _.uniqueId('tweet-')
-        @model.on 'change:id', @render
-        @model.on 'change:category', @renderCategory
-        @$el.mouseenter(@showActions).mouseleave(@hideActions)
-        @render()
-          
-    render: =>
-        @renderCategory() if @model.get 'category' 
-        @$el.html _.template Templates.tweet, @model.toJSON() 
-        if $("##{@$el.attr 'id'}").length is 0
-          $(@options.parentEl).prepend @el
-          @$('.time-ago').timeago()
-          if @options.slideIn
-            h = @$el.height() 
-            @$el.hide().css height: 0
-            @$el.show().animate(height:h, duration:2000)
+  initialize: =>
+    @model.on 'change:id', @render
+    @model.on 'change:category', @renderCategory
+    @$el.mouseenter(@showActions).mouseleave(@hideActions)
+    @render()
 
-    renderCategory: =>
-        cat = @model.get 'category'
-        if cat is 'boring' and @model.hasChanged 'category' 
-            @$el.css height: 'auto'
-            @$el.attr 'class', "#{@className} #{cat}"
-        else
-            @$el.attr 'class', "#{@className} #{cat}"
+  render: =>
+    @$el.html _.template Templates.tweet, @model.toJSON() 
+    @$('.time-ago').timeago()
+    @renderCategory() 
 
-    markAsRelevant: => 
-        @changeState "interesting"
-    
-    markAsIrrelevant: => 
-        @changeState "boring"
-    
-    changeState: (state) =>
-        (@model.save category:state) if (@model.get 'category') isnt state
+  renderCategory: (model, cat) =>
+    if cat is CATEGORY_BORING and @model.hasChanged 'category'
+      @$el.css height: 'auto'
+    prevCat = @model.previous 'category'
+    if prevCat? then @$el.removeClass prevCat
+    @$el.addClass cat
 
-    showActions: =>
-        @$('.time-ago').toggleClass "hidden", true
-        @$('.actions').toggleClass "hidden", false
+  markAsRelevant: => 
+    @changeState CATEGORY_INTERESTING 
 
-    hideActions: =>
-        @$('.time-ago').toggleClass "hidden", false
-        @$('.actions').toggleClass "hidden", true
+  markAsIrrelevant: => 
+    @changeState CATEGORY_BORING 
+
+  changeState: (newCat) =>
+    cat = @model.get 'category'
+    if cat isnt newCat
+      @model.save category:newCat
+
+  showActions: =>
+    @$('.time-ago').toggleClass "hidden", true
+    @$('.actions').toggleClass "hidden", false
+
+  hideActions: =>
+    @$('.time-ago').toggleClass "hidden", false
+    @$('.actions').toggleClass "hidden", true
 
 class StreamsView extends View
 
@@ -297,6 +297,7 @@ class StreamsView extends View
         stream.on "destroy", ->
           streamView.$el.remove()
         @$el.append streamView.el
+        streamView.adjustSettingsSize()
 
     tutorialNext: ->
       @user.set tutorialState: (@user.get("tutorialState") || 0) + 1
@@ -326,14 +327,14 @@ class StreamView extends View
         @$el.addClass "closed"
         @$el.attr 'id', "stream-#{@model.id}"
         @model.on 'change:keywords', @renderKeywords
+        @model.on 'change:hideBoring', @renderTweets
         @render()
 
     render: =>
         @$el.html _.template Templates.stream, @model.toJSON()
-        $('#streams').append @el
         @renderTitle()
         @renderKeywords()
-        @renderTweets()
+        @renderTweets() 
 
     renderTitle: =>
         words = @model.getKeywords()  
@@ -391,7 +392,7 @@ class StreamView extends View
             h = 60 + parseInt @$('.settings').css('height').replace('px', '')
             @$('.tweets').animate top: 10+h, 50
             @$('.stream-header').animate height: "#{h}px", 50
-    
+
     removeStream: =>
         @model.destroy() 
 
