@@ -327,7 +327,6 @@ class StreamView extends View
         @$el.addClass "closed"
         @$el.attr 'id', "stream-#{@model.id}"
         @model.on 'change:keywords', @renderKeywords
-        @model.on 'change:hideBoring', @renderTweets
         @render()
 
     render: =>
