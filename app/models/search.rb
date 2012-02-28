@@ -5,7 +5,7 @@ class Search < ActiveRecord::Base
   belongs_to :user
 
   def recently_classified
-    classified_tweets.limit(10).order("created_at DESC")
+    classified_tweets.limit(20).order("created_at DESC")
   end
 
   protected
