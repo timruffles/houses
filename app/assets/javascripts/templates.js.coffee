@@ -39,9 +39,9 @@ window.Templates =
     <div class="actions hidden">
         <span class="iconic yes"> Yes</span> 
         <span class="iconic no"> No</span> 
-        <span class="intents"><a href="https://twitter.com/intent/tweet?in_reply_to=<%=idStr%>">Reply</a>
-        <a href="https://twitter.com/intent/retweet?tweet_id=<%=idStr%>">Retweet</a>
-        <a href="https://twitter.com/intent/favorite?tweet_id=<%=idStr%>">Favorite</a></span>
+        <span class="intents"><a href="https://twitter.com/intent/tweet?in_reply_to=<%=id %>">Reply</a>
+        <a href="https://twitter.com/intent/retweet?tweet_id=<%=id %>">Retweet</a>
+        <a href="https://twitter.com/intent/favorite?tweet_id=<%=id %>">Favorite</a></span>
     </div>
   """
   addStream: addStream = """
