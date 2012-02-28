@@ -107,7 +107,7 @@ class Tweets extends Collection
 class Stream extends Model
 
   initialize: =>
-    @tweetsCollection = new Tweets @get 'tweets'
+    @tweetsCollection = new Tweets @get 'tweets' 
     if @isNew() then @on "change:id", @subscribe
     else @subscribe()
 
@@ -127,6 +127,7 @@ class Stream extends Model
     @keywords.pluck "word"
 
   subscribe: =>
+
     PUBNUB?.subscribe
       channel: "search:#{@id}:tweets:add"
       callback: (message) =>
@@ -144,7 +145,6 @@ class Stream extends Model
 
   removeKeyword: (word) =>
     @keywords.remove(word)
-
 
 class Streams extends Collection
 
@@ -185,7 +185,7 @@ class TweetsView extends View
   initialize: =>
     @renderQueue = []
     @queuePaused = false
-    @collection.bind 'add', @addToQueue
+    @collection.on 'add', @addToQueue
     @render()
     @$el
       .mouseenter(=> @queuePaused = true)
@@ -209,7 +209,7 @@ class TweetsView extends View
       model: tweet
 
     if not @$el.find(tweetView.el).length
-      @$el.append tweetView.el
+      @$el.prepend tweetView.el
       if slideIn
         h = tweetView.$el.height() 
         tweetView.$el.hide().css height: 0
