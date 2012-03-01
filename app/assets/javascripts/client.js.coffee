@@ -232,8 +232,6 @@ class TweetView extends View
     @model.on 'change:category', @renderCategory
     @$el.mouseenter(@showActions).mouseleave(@hideActions)
     @render()
-    twttr.anywhere (T) =>
-      T.linkifyUsers(@el)
 
   render: =>
     @$el.html _.template Templates.tweet, @model.toJSON() 
@@ -432,6 +430,7 @@ class AppView extends View
 
     twttr.anywhere (T) ->
       T.hovercards("#streams")
+      T.linkifyUsers("#streams")
       T(".profile_image").hovercards username: (node) -> node.alt
 
 $ ->
