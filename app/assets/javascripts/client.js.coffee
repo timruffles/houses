@@ -127,7 +127,7 @@ class Stream extends Model
     @keywords.pluck "word"
 
   subscribe: =>
-
+ 
     PUBNUB?.subscribe
       channel: "search:#{@id}:tweets:add"
       callback: (message) =>
@@ -212,8 +212,8 @@ class TweetsView extends View
       @$el.prepend tweetView.el
       if slideIn
         h = tweetView.$el.height() 
-        tweetView.$el.hide().css height: 0
-        tweetView.$el.show().animate(height:h, duration:2000)
+        tweetView.$el.css "margin-top": "#{-h}px"
+        tweetView.$el.show().animate("margin-top": "0px", duration:500)
 
 CATEGORY_BORING = "boring"
 CATEGORY_INTERESTING = "interesting"
