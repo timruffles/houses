@@ -15,8 +15,7 @@ body
 #headline
   color: $egg
   text-align: center
-  margin-top: 5%
-  margin-bottom: 2%
+  margin-bottom: 1.5%
   h1
     font-family: 'Handlee', cursive
     color: lighten($lightblue,15)
@@ -30,7 +29,7 @@ body
     width: 70%
     font-size: 2em
     margin: 0 auto
-    margin-top: 1em
+ 
 
 .thumbnails
   width: 500px
@@ -41,14 +40,14 @@ body
   width: 240px
   margin: 0 auto
   .btn 
-    margin-top: 5%
-    color: $darkblue
+    margin-top: 20px
+    margin-bottom: 100px
+    color: darken(#7dc0df,20)
     font-size: 2em
     font-family: 'Handlee', cursive
-    text-shadow: none
-    background-color: $lightblue
-    border-color: lighten($darkblue,20)
-    +background(linear-gradient(color-stops(lighten($lightblue,20) 0%,$lightblue 100%)))
+    text-shadow: none 
+    border-color: lighten(#7dc0df,50)
+    +background(linear-gradient(color-stops(lighten(#7dc0df,40) 0%,lighten(#7dc0df,20) 100%)))
     padding-right: 1em
     img
       float: left
