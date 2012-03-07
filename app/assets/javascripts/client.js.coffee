@@ -61,12 +61,12 @@ Model::sync = Collection::sync = sync = (method,model,options = {}) ->
 
   {success,error} = params
   params.success = (resp,status,xhr) ->
-    console.log "http response", resp, params
+    console?.log "http response", resp, params
     if success
       # don't pass through HTTP implementation details to model layer
       success camelize(resp), status, xhr
   params.error = ->
-    console.log "http error resp", arguments
+    console?.log "http error resp", arguments
     error(arguments...) if error
 
   params.processData = false if params.type isnt "GET" and not Backbone.emulateJSON
@@ -256,7 +256,6 @@ class TweetView extends View
   changeState: (newCat) =>
     cat = @model.get 'category'
     if cat isnt newCat
-      console.log newCat
       @model.save category:newCat
 
   showActions: =>
@@ -432,4 +431,3 @@ $ ->
   authenticityToken = $("[name=csrf-token]").attr("content")
   window.app = app = new App()
   window.appView = appView = new AppView model:app
-  console.log ":o::> Teach the Bird! <::o:"
