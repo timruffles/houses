@@ -29,12 +29,14 @@ window.Templates =
     <span class='add-keyword iconic'></span>
   """
   tweet: """
-    <img class="profile_image" src="<%=user.profileImageUrl%>" alt="<%='@'+user.screenName%>"/>
+    <a href="https://twitter.com/intent/user?screen_name=<%= user.screenName %>">
+      <img class="profile_image" src="<%=user.profileImageUrl%>" alt="<%='@'+user.screenName%>"/>
+    </a>
     <p class="user-info">
        <span class="username"><%=user.name%></span>
-       <a href="http://twitter.com/intent/user/<%= user.screenName %>" class="screenname"><%='@'+user.screenName%></a>
+       <a href="https://twitter.com/intent/user?screen_name=<%= user.screenName %>" class="screenname"><%='@'+user.screenName%></a>
     </p>
-    <span class="text"><%= text.parseURL().parseHashtag() %></span>
+    <span class="text"><%= text.parseURL().parseUser().parseHashtag() %></span>
     <div class="time-ago" title="<%=createdAt%>"></div>
     <div class="actions hidden">
         <span class="iconic yes"> Yes</span> 

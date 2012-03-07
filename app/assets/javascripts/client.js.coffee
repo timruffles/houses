@@ -127,7 +127,7 @@ class Stream extends Model
     @keywords.pluck "word"
 
   subscribe: =>
- 
+
     PUBNUB?.subscribe
       channel: "search:#{@id}:tweets:add"
       callback: (message) =>
@@ -426,12 +426,7 @@ class AppView extends View
     new StreamsView
       collection:@model.get 'streams'
       user: @model.get 'user'
-      app: @model
-
-    twttr.anywhere (T) ->
-      T.hovercards("#streams")
-      T.linkifyUsers("#streams")
-      T(".profile_image").hovercards username: (node) -> node.alt
+      app: @model   
 
 $ ->
   authenticityToken = $("[name=csrf-token]").attr("content")
