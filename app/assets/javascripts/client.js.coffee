@@ -197,19 +197,19 @@ class TweetsView extends View
 
   render: =>
     if @collection.length > 0 then @$el.html ""
-    @collection.each (tweet) => @renderTweet tweet, false
+    @collection.each (tweet) => @renderTweet tweet, false, true
 
   renderFromQueue: =>
     if @renderQueue.length > 0 and not @queuePaused
-      @renderTweet @renderQueue.pop(), true
+      @renderTweet @renderQueue.pop(), true, false
 
-  renderTweet: (tweet, slideIn) =>
+  renderTweet: (tweet, slideIn, append) =>
 
     tweetView = new TweetView
       model: tweet
 
     if not @$el.find(tweetView.el).length
-      @$el.prepend tweetView.el
+      if append then @$el.append tweetView.el else @$el.prepend tweetView.el
       if slideIn
         h = tweetView.$el.height() 
         tweetView.$el.css "margin-top": "#{-h}px"
