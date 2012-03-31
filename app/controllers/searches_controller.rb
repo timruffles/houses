@@ -32,7 +32,7 @@ class SearchesController < ApplicationController
   end
   def export
     csv = Search.find(params[:id]).to_csv
-    render :text => csv, :content_type => Mime::CSV
+    return send_data csv, :filename => "search.csv", :content_type => Mime::CSV, :disposition => "attachment"
   end
 end
 

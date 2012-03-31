@@ -1,3 +1,4 @@
+require "csv"
 class Search < ActiveRecord::Base
   include PublishesCallbacks
   has_many :classified_tweets
@@ -8,10 +9,13 @@ class Search < ActiveRecord::Base
     classified_tweets.limit(20).order("created_at DESC")
   end
 
-  def to_csv params
-    classified = search.classified_tweets.not_boring
+  def to_csv
+    classified = classified_tweets.not_boring
     CSV.generate do |csv|
-      csv << classified.shift.to_array
+      csv << classified_tweets.first.to_array_titles
+      classified_tweets.each do |ct|
+        csv << ct.to_array
+      end
     end
   end
 

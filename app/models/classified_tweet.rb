@@ -7,19 +7,21 @@ class ClassifiedTweet < ActiveRecord::Base
       (super).merge :tweet => JSON.load(tweet.tweet)
     else
       json = (super).merge JSON.load(tweet.tweet) # we want tweet id
-      json[:id] = json[:id].to_s
+      json['id'] = json['id'].to_s
       json
     end
   end
+  def to_hash
+    self.as_json.merge(:tweet => JSON.load(tweet.tweet))
+  end
   def array_format
     base = ["id_str", "text", {"user" => ["screen_name", "created_at", "url", "name", "id_str"]}]
-    as_hash = self.as_json.merge(:tweet => JSON.load(tweet.tweet))
-    all = as_hash.keys
-    exclude = ["user","entities","category","search_id","tweet_id","updated_at"]
+    all = to_hash.keys
+    exclude = ["tweet","user","entities","category","search_id","tweet_id","updated_at"]
     base + (all - base - exclude)
   end
   def to_array
-    ArrayRepresentation.format as_hash, array_format
+    ArrayRepresentation.format to_hash, array_format
   end
   def to_array_titles
     ArrayRepresentation.titles array_format
