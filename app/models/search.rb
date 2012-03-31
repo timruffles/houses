@@ -1,8 +1,8 @@
 require "csv"
 class Search < ActiveRecord::Base
   include PublishesCallbacks
-  has_many :classified_tweets
-  has_many :tweets, :through => :classified_tweets
+  has_many :tweets, :through => :classified_tweets, :dependent => :delete
+  has_many :classified_tweets, :dependent => :delete
   belongs_to :user
 
   def recently_classified
