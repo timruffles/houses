@@ -322,6 +322,7 @@ class StreamView extends View
     'click  .add-keyword'     : 'addKeyword'
     'click  .remove-keyword'  : 'removeKeyword'
     'click  .remove-stream'   : 'removeStream'
+    'click .export' : 'export'
 
   initialize: =>  
     @settingsOpen = false
@@ -346,6 +347,9 @@ class StreamView extends View
       title = words.join(', ')
       if title.length > 22 then title = title.slice(0,22) + '...'
     @$('.stream-title').html title
+
+  export: ->
+    window.location = "/streams/#{@model.id}/export.csv"
   
   renderKeywords: =>
     $keywords = @$('.keywords')

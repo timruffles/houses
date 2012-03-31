@@ -15,4 +15,10 @@ class ClassifiedTweetTest < ActiveSupport::TestCase
     end
     tweet.save
   end
+  test "has an array rep" do
+    p Factory(:classified_tweet).to_array
+  end
+  test "array titles" do
+    p Factory(:classified_tweet).to_array_titles
+  end
 end

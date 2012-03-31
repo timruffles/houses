@@ -4,6 +4,7 @@ window.Templates =
     <header class="stream-header">
         <h1 class="stream-title"></h1>
         <span class="toggle-settings iconic"></span>
+        <a class="btn export">Export</a>
         <section class="settings">
             <section class="keywords"></section>
             <div>

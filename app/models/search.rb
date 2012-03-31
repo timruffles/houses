@@ -8,6 +8,13 @@ class Search < ActiveRecord::Base
     classified_tweets.limit(20).order("created_at DESC")
   end
 
+  def to_csv params
+    classified = search.classified_tweets.not_boring
+    CSV.generate do |csv|
+      csv << classified.shift.to_array
+    end
+  end
+
   protected
 
   after_create do
@@ -19,5 +26,6 @@ class Search < ActiveRecord::Base
   after_destroy do
     publish_callback :after_destroy, {:keywords => keywords}
   end
+
 
 end

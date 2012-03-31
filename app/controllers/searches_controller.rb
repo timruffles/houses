@@ -30,5 +30,9 @@ class SearchesController < ApplicationController
     @search.destroy
     respond_with @search
   end
+  def export
+    csv = Search.find(params[:id]).to_csv
+    render :text => csv, :content_type => Mime::CSV
+  end
 end
 
