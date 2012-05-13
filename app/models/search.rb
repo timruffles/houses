@@ -30,7 +30,7 @@ class Search < ActiveRecord::Base
   after_destroy do
     publish_callback :after_destroy, {:keywords => keywords}
     tweet_ids = classified_tweets.select("distinct(tweet_id)").map(&:tweet_id)
-    shared = ClassifiedTweet.group(:tweet_id).where(:tweet_id => tweet_ids).having("count(*) > 1").map(&:tweet_id)
+    shared = ClassifiedTweet.group(:tweet_id).where(:tweet_id => tweet_ids).having("count(classified_tweets.id) > 1").map(&:tweet_id)
     ClassifiedTweet.where(:id => classified_tweets.map(&:id)).delete_all
     Tweet.where(:id => (tweet_ids - shared)).delete_all
   end
