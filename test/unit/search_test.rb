@@ -15,4 +15,19 @@ class SearchTest < ActiveSupport::TestCase
     @search.keywords = "new keywords"
     @search.save
   end
+  test "deletes associated classified tweets + tweets that nobody else has classified" do
+    @search = Factory :search
+    unshared = [
+      Factory(:classified_tweet, :search => @search),
+      Factory(:classified_tweet, :search => @search)
+    ]
+    shared = Factory :classified_tweet, :search => @search
+    Factory :classified_tweet, :tweet => shared.tweet
+    @search.destroy
+    assert (unshared.all? {|unshared|
+      ClassifiedTweet.find_by_id(unshared.id).nil? && Tweet.find_by_id(unshared.tweet.id).nil?
+    }), "should have deleted all classified tweets and unshared tweets of search"
+    assert ClassifiedTweet.find_by_id(shared.id).nil?, "should delete classified tweet"
+    assert Tweet.find_by_id(shared.tweet.id).nil? == false, "should not delete a shared tweet of a search"
+  end
 end

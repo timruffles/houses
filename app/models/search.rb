@@ -1,8 +1,8 @@
 require "csv"
 class Search < ActiveRecord::Base
   include PublishesCallbacks
-  has_many :tweets, :through => :classified_tweets, :dependent => :delete_all
-  has_many :classified_tweets, :dependent => :delete_all
+  has_many :classified_tweets
+  has_many :tweets, :through => :classified_tweets
   belongs_to :user
 
   def recently_classified
@@ -29,7 +29,10 @@ class Search < ActiveRecord::Base
   end
   after_destroy do
     publish_callback :after_destroy, {:keywords => keywords}
+    tweet_ids = classified_tweets.select("distinct(tweet_id)").map(&:tweet_id)
+    shared = ClassifiedTweet.group(:tweet_id).where(:tweet_id => tweet_ids).having("count(*) > 1").map(&:tweet_id)
+    ClassifiedTweet.where(:id => classified_tweets.map(&:id)).delete_all
+    Tweet.where(:id => (tweet_ids - shared)).delete_all
   end
-
 
 end
