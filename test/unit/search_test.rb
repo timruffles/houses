@@ -23,7 +23,9 @@ class SearchTest < ActiveSupport::TestCase
     ]
     shared = Factory :classified_tweet, :search => @search
     Factory :classified_tweet, :tweet => shared.tweet
+    Resque.expects(:enqueue).once
     @search.destroy
+    Search.clean_up @search.id
     assert (unshared.all? {|unshared|
       ClassifiedTweet.find_by_id(unshared.id).nil? && Tweet.find_by_id(unshared.tweet.id).nil?
     }), "should have deleted all classified tweets and unshared tweets of search"

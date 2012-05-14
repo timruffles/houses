@@ -12,6 +12,8 @@ gem 'omniauth'
 gem 'omniauth-twitter'
 gem 'cancan'
 
+gem 'resque'
+gem 'hirefire'
 
 gem 'rails-dev-tweaks'
 

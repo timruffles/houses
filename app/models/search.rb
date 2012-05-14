@@ -10,13 +10,21 @@ class Search < ActiveRecord::Base
   end
 
   def to_csv
-    classified = classified_tweets.not_boring
+    classified = classified_tweets.not_boring.includes(:tweet).limit(1000)
     CSV.generate do |csv|
       csv << classified_tweets.first.to_array_titles
       classified_tweets.each do |ct|
         csv << ct.to_array
       end
     end
+  end
+
+  def self.clean_up id
+    tweet_ids = ClassifiedTweet.where(:search_id => id).select("distinct(tweet_id)").map(&:tweet_id)
+    shared = ClassifiedTweet.select("tweet_id, count(id)").group(:tweet_id)\
+      .where(:tweet_id => tweet_ids).having("count(id) > 1").map(&:tweet_id)
+    ClassifiedTweet.where(:search_id => id).delete_all
+    Tweet.where(:id => (tweet_ids - shared)).delete_all
   end
 
   protected
@@ -29,10 +37,7 @@ class Search < ActiveRecord::Base
   end
   after_destroy do
     publish_callback :after_destroy, {:keywords => keywords}
-    tweet_ids = classified_tweets.select("distinct(tweet_id)").map(&:tweet_id)
-    shared = ClassifiedTweet.select("tweet_id, count(id)").group(:tweet_id).where(:tweet_id => tweet_ids).having("count(id) > 1").map(&:tweet_id)
-    ClassifiedTweet.where(:search_id => id).delete_all
-    Tweet.where(:id => (tweet_ids - shared)).delete_all
+    Resque.enqueue DelayedCall, Search, :clean_up, id
   end
 
 end
