@@ -1,7 +1,9 @@
 class MainController < ApplicationController
   skip_authorization_check
-  def index
+  layout :choose_layout
+  def choose_layout
+    current_user.nil? ? "landing_page" : "application"
   end
-  def research
+  def index
   end
 end
