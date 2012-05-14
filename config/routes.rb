@@ -2,8 +2,6 @@ TwitterMlServer::Application.routes.draw do
   #match "/" => "main#research", :constraints => { :domain => /^twitter-research/ }
   match "/" => "main#index"
 
-  match "/signup" => "auth#twitter"
-
   match "/auth/:provider/callback" => "sessions#create"
   match "/logout" => "sessions#destroy"
   resources :users, :only => [] do
