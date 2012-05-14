@@ -62,7 +62,7 @@ window.Templates =
     """
     1: """
       <p class="tutorial">
-        Teach the bird which tweets are interesting by hovering over them and clicking "Yes" or "No".
+        Show us which tweets are interesting by hovering over them and clicking "Yes" or "No".
       </p>
       <div class="yes-no-tutorial">
       </div>
@@ -70,7 +70,7 @@ window.Templates =
     """
     2: """
       <p class="tutorial">
-        Thanks for using Teach the Bird! If you find us useful, it'd help us so much if you told your followers!
+        Thanks for using Twedar! If you find us useful, it'd help us so much if you told your followers!
       </p>
       <p>
         <a class="large btn blue btn-info next" target="_blank" href="#{twIntent}/tweet?text=#{encodeURIComponent '@teachthebird'}">Tweet about us</a>
