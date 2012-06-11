@@ -9,4 +9,4 @@ HasRedis.redis_instance = if ["production","staging"].include? ENV["RAILS_ENV"]
 else
   Redis.new
 end
-Resque.redis = HasRedis.redis
+Resque.redis = HasRedis.redis_instance
