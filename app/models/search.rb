@@ -37,7 +37,7 @@ class Search < ActiveRecord::Base
   end
   after_destroy do
     publish_callback :after_destroy, {:keywords => keywords}
-    Resque.enqueue DelayedCall, Search.class.to_s, :clean_up, id.to_s
+    Resque.enqueue DelayedCall, Search.to_s, :clean_up, id.to_s
   end
 
 end
