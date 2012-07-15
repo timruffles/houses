@@ -18,7 +18,7 @@ module TwitterMlServer
     # Custom directories with classes and modules you want to be autoloadable.
     config.autoload_once_paths += %W(#{config.root}/lib)
     config.assets.initialize_on_precompile = false
-    config.assets.precompile += %w{*.js app.css foundation.css landing_page.css ie.css app.js client.js}
+    config.assets.precompile += %w{*.js app.css foundation.css landing_page.css ie.css app.js client.js twedar-*.png}
 
     # Only load the plugins named here, in the order given (default is alphabetical).
     # :all can be used as a placeholder for all plugins not explicitly named.
