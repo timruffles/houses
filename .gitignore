@@ -3,3 +3,5 @@ db/*.sql*
 tmp
 run.sh
 .sass-cache
+*.swp
+*.swo

@@ -2,7 +2,8 @@
   <div class="row">
     <div class="panel signup twelve columns">
       <div class="row subsections">
-        <h1>Just the tweets you want</h1>
+        <h1>Just the tweets you want. <span class="name">Twedar</span></h1>
+        <div class="logo"><%= image_tag("twedar-130.png", :size => "130x130", :alt => "Filter tweets") %></div>
         <div class="four columns">
           <h4 class="subheader">Live stream of filtered tweets</h4>
           <p>Create a live stream without the rubbish. Click to indicate the types of tweet you don't want.</p>
@@ -30,12 +31,12 @@
 
       <div class="row signup-button">
         <div class="eight columns offset-by-two">
-          <h4>Make Twitter work for you with Twedar</h4>
+          <h4>Make Twitter work for you with <span class="name">Twedar</span></h4>
           <a href="/auth/twitter" class="button nice radius blue large">Sign in with Twitter</a>
         </div>
       </div>
 
-      <hr />
+      <hr class="footer-break" />
 
       <div class="row footer">
         <span>Follow us at <%= link_to "@twedarapp", "http://twitter.com/intent/follow?screen_name=twedarapp" %></span>
