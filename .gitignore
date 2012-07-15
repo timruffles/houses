@@ -1,4 +1,5 @@
 log
+*.DS_Store
 db/*.sql*
 tmp
 run.sh
@@ -7,3 +8,4 @@ run.sh
 *.swo
 *.log
 *.db
+public/assets
