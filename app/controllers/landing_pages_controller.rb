@@ -7,4 +7,16 @@ class LandingPagesController < ApplicationController
     render :find
   end
 
+  def research
+    render :research
+  end
+
+  def sales
+    render :research
+  end
+
+  def marketing
+    render :marketing
+  end
+
 end

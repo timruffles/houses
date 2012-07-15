@@ -10,3 +10,7 @@ development:
 test:
   adapter: sqlite3
   database: test.db
+
+production:
+  adapter: sqlite3
+  database: prod.db

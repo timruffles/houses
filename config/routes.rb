@@ -1,6 +1,9 @@
 TwitterMlServer::Application.routes.draw do
-  #match "/" => "main#research", :constraints => { :domain => /^twitter-research/ }
   match "/" => "main#index"
+
+  ["research","sales","marketing"].each do |route|
+    match "/#{route}" => "landing_pages##{route}"
+  end
 
   match "/auth/:provider/callback" => "sessions#create"
   match "/logout" => "sessions#destroy"
