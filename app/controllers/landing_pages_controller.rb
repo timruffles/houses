@@ -12,7 +12,7 @@ class LandingPagesController < ApplicationController
   end
 
   def sales
-    render :research
+    render :sales
   end
 
   def marketing
