@@ -1,10 +1,11 @@
 GEM
   remote: http://rubygems.org/
   specs:
+    crm114 (1.0.3)
     daemons (1.1.4)
     eventmachine (0.12.10)
     http_parser.rb (0.5.3)
-    json (1.6.2)
+    json (1.6.8)
     multi_json (1.0.4)
     mysql (2.8.1)
     redis (2.2.2)
@@ -22,6 +23,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  crm114
   json
   mysql
   redis
